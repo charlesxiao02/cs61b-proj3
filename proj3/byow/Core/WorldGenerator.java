@@ -58,4 +58,22 @@ public class WorldGenerator {
         }
     }
 
+    private static void makeHallway(TETile[][] world, Position start, Position end) {
+        if (start.x() == end.x()) { //vertical hallway
+            int length = Math.abs(start.y() - end.y());
+            for (int i = 0; i < length; i++) {
+                world[start.y() + i][start.x()] = Tileset.FLOOR;
+                world[start.y() + i][start.x() - 1] = Tileset.WALL;
+                world[start.y() + i][start.x() + 1] = Tileset.WALL;
+            }
+        } else { //horizontal hallway
+            int length = Math.abs(start.x() - end.x());
+            for (int i = 0; i < length; i++) {
+                world[start.y()][start.x() + i] = Tileset.FLOOR;
+                world[start.y() - 1][start.x() + i] = Tileset.WALL;
+                world[start.y() + 1][start.x() + i] = Tileset.WALL;
+            }
+        }
+    }
+
 }
