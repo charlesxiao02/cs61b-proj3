@@ -30,8 +30,25 @@ public class WorldGenerator {
             }
         }
 
+        int numRooms = randomGen.nextInt();
 
         return world;
+    }
+
+    private static void makeRoom(TETile[][] world, Position p, int w, int h) {
+        for (int r = 0; r < h; r++) {
+            for (int c = 0; c < w; c++) {
+                world[p.y() + r][p.x() + c] = Tileset.FLOOR;
+            }
+        } //setting top and bottom walls
+        for (int c = -1; c < w + 1; c++) {
+            world[p.y() - 1][p.x() + c] = Tileset.WALL;
+            world[p.y() + h][p.x() + c] = Tileset.WALL;
+        } //setting left right walls
+        for (int r = 0; r < w; r++) {
+            world[p.y() + r][p.x() - 1] = Tileset.WALL;
+            world[p.y() + r][p.x() + w] = Tileset.WALL;
+        }
     }
 
 }
