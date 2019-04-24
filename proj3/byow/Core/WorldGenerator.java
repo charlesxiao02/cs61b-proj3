@@ -17,7 +17,7 @@ public class WorldGenerator {
         int w = randomGen.nextInt();
         int h = randomGen.nextInt();
         while (((w < 50) || (w > 120))
-                && ((h < 30) || (h > 90))) {
+                && ((h < 20) || (h > 90))) {
             w = randomGen.nextInt();
             h = randomGen.nextInt();
         }
@@ -31,6 +31,13 @@ public class WorldGenerator {
         }
 
         int numRooms = randomGen.nextInt();
+        while (numRooms / (roomHeight * roomWidth) < 75) { //attempts to keep number of rooms reasonable relative to world size
+            numRooms = randomGen.nextInt();
+        }
+        int numHalls = randomGen.nextInt();
+        while ((numHalls < numRooms) || (numHalls > numRooms * 2)) { //keeping number of hallways enough to connect all rooms but not too crazy
+            numHalls = randomGen.nextInt();
+        }
 
         return world;
     }
