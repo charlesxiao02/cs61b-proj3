@@ -48,7 +48,7 @@ public class WorldGenerator {
             if (y + h > worldHeight) {
                 h = worldHeight - 1 - y;
             }
-            /*
+            
             for (int currW = x; currW < x + w + 1; currW++) {
                 if (!world[currW][y].equals(Tileset.NOTHING)
                         || !world[currW][y + h].equals(Tileset.NOTHING)) {
@@ -61,7 +61,7 @@ public class WorldGenerator {
                     continue;
                 }
             }
-            */
+
             if ((h > 3) && (w > 3)) {
                 makeRoom(world, new Position(x, y), w, h);
                 roomsGenerated++;
