@@ -8,39 +8,43 @@ import java.util.Random;
 
 public class WorldGenerator {
 
+    private static final int worldWidth = 80;
+    private static final int worldHeight = 40;
+
     public static TETile[][] generateWorld(long seed) {
 
+        TERenderer ter = new TERenderer();
+        ter.initialize(worldWidth, worldHeight);
+
         Random randomGen = new Random(seed);
-        int roomWidth = 120;
-        int roomHeight = 60;
-        TETile[][] world = new TETile[roomWidth][roomHeight];
-        for (int r = 0; r < roomHeight; r++) {
-            for (int c = 0; c < roomWidth; c++) {
+        TETile[][] world = new TETile[worldWidth][worldHeight];
+        for (int r = 0; r < worldHeight; r++) {
+            for (int c = 0; c < worldWidth; c++) {
                 world[c][r] = Tileset.NOTHING;
             }
         }
 
-        int numRooms = Math.floorMod(randomGen.nextInt(), ((roomHeight * roomWidth) / 75) - 4) + 4;
+        int numRooms = Math.floorMod(randomGen.nextInt(), ((worldHeight * worldWidth) / 75) - 4) + 4;
         int numHalls = randomGen.nextInt();
         while ((numHalls < numRooms) || (numHalls > numRooms * 2)) { //keeping number of hallways enough to connect all rooms but not too crazy
             numHalls = randomGen.nextInt();
         }
 
         for (int i = 0; i < numRooms; i++) { //rooms can have position from (1, 1) up to (rW - 3, rH - 3)
-            int x = Math.floorMod(randomGen.nextInt(), roomWidth - 4) + 1;
-            int y = Math.floorMod(randomGen.nextInt(), roomHeight - 4) + 1;
+            int x = Math.floorMod(randomGen.nextInt(), worldWidth - 4) + 1;
+            int y = Math.floorMod(randomGen.nextInt(), worldHeight - 4) + 1;
             while (!(world[x - 1][y - 1].equals(Tileset.NOTHING))
                     || !(world[x + 3][y + 3].equals(Tileset.NOTHING))) {
-                x = Math.floorMod(randomGen.nextInt(), roomWidth - 4) + 1;
-                y = Math.floorMod(randomGen.nextInt(), roomHeight - 4) + 1;
+                x = Math.floorMod(randomGen.nextInt(), worldWidth - 4) + 1;
+                y = Math.floorMod(randomGen.nextInt(), worldHeight - 4) + 1;
             }
-            int w = Math.floorMod(randomGen.nextInt(), (roomWidth / 8) - 2) + 2;
-            int h = Math.floorMod(randomGen.nextInt(), (roomHeight / 8) - 2) + 2;
-            if (x + w > roomWidth - 2) {
-                w = roomWidth - 2 - x;
+            int w = Math.floorMod(randomGen.nextInt(), (worldWidth / 8) - 2) + 2;
+            int h = Math.floorMod(randomGen.nextInt(), (worldHeight / 8) - 2) + 2;
+            if (x + w > worldWidth - 2) {
+                w = worldWidth - 1 - x;
             }
-            if (y + h > roomHeight - 2) {
-                h = roomHeight - 2 - y;
+            if (y + h > worldHeight - 2) {
+                h = worldHeight - 1 - y;
             }
             while (!(world[x - 1][y + h + 1].equals(Tileset.NOTHING))
                     || !(world[x + w + 1][y + h + 1].equals(Tileset.NOTHING))) {
@@ -51,24 +55,25 @@ public class WorldGenerator {
                 w--;
             }
             makeRoom(world, new Position(x, y), w, h);
+            ter.renderFrame(world);
         }
 
         return world;
     }
 
-    private static void makeRoom(TETile[][] world, Position p, int w, int h) {
-        for (int r = 0; r < h; r++) {
-            for (int c = 0; c < w; c++) {
+    private static void makeRoom(TETile[][] world, Position p, int w, int h) { //w and h include walls
+        for (int r = 1; r < h - 1; r++) {
+            for (int c = 1; c < w - 1; c++) {
                 world[p.x() + c][p.y() + r] = Tileset.FLOOR;
             }
         } //setting top and bottom walls
-        for (int c = -1; c < w + 1; c++) {
-            world[p.x() + c][p.y() - 1] = Tileset.WALL;
-            world[p.x() + c][p.y() + h] = Tileset.WALL;
+        for (int c = 0; c < w; c++) {
+            world[p.x() + c][p.y()] = Tileset.WALL;
+            world[p.x() + c][p.y() + h - 1] = Tileset.WALL;
         } //setting left right walls
-        for (int r = 0; r < h; r++) {
-            world[p.x() - 1][p.y() + r] = Tileset.WALL;
-            world[p.x() + w][p.y() + r] = Tileset.WALL;
+        for (int r = 1; r < h - 1; r++) {
+            world[p.x()][p.y() + r] = Tileset.WALL;
+            world[p.x() + w - 1][p.y() + r] = Tileset.WALL;
         }
     }
 
@@ -93,15 +98,23 @@ public class WorldGenerator {
      //testing purposes
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
-        ter.initialize(120, 60);
+        ter.initialize(worldWidth, worldHeight);
 
         // initialize tiles
-        TETile[][] world = new TETile[120][60];
+        TETile[][] world = new TETile[worldWidth][worldHeight];
+
+        for (int r = 0; r < worldWidth; r++) {
+            for (int c = 0; c < worldHeight; c++) {
+                world[r][c] = Tileset.NOTHING;
+            }
+        }
 
         // fills in a block 14 tiles wide by 4 tiles tall
 
 
-        world = generateWorld(78155778);
+        //world = generateWorld(78155778);
+
+        makeRoom(world, new Position(3, 4), 4, 4);
 
         // draws the world to the screen
         ter.renderFrame(world);
