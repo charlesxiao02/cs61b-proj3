@@ -36,25 +36,30 @@ public class WorldGenerator {
             int x = Math.floorMod(randomGen.nextInt(), worldWidth - 4);
             int y = Math.floorMod(randomGen.nextInt(), worldHeight - 4);
             while (!(world[x][y].equals(Tileset.NOTHING))
-                    || !(world[x + 3][y + 3].equals(Tileset.NOTHING))) {
+                    || !(world[x + 4][y + 4].equals(Tileset.NOTHING))) {
                 x = Math.floorMod(randomGen.nextInt(), worldWidth - 4);
                 y = Math.floorMod(randomGen.nextInt(), worldHeight - 4);
             }
             int w = Math.floorMod(randomGen.nextInt(), (worldWidth / 8) - 4) + 4;
             int h = Math.floorMod(randomGen.nextInt(), (worldHeight / 8) - 4) + 4;
-            if (x + w > worldWidth - 2) {
+            if (x + w > worldWidth) {
                 w = worldWidth - 1 - x;
             }
-            if (y + h > worldHeight - 2) {
+            if (y + h > worldHeight) {
                 h = worldHeight - 1 - y;
             }
-            while (!(world[x - 1][y + h + 1].equals(Tileset.NOTHING))
-                    || !(world[x + w + 1][y + h + 1].equals(Tileset.NOTHING))) {
-                h--;
+
+            for (int currW = x; currW < x + w + 1; currW++) {
+                if (!world[currW][y].equals(Tileset.NOTHING)
+                        || !world[currW][y + h].equals(Tileset.NOTHING)) {
+                    continue;
+                }
             }
-            while (!(world[x + w + 1][y -1].equals(Tileset.NOTHING))
-                    || !(world[x + w + 1][y + h + 1].equals(Tileset.NOTHING))) {
-                w--;
+            for (int currH = y; currH < y + h + 1; currH++) {
+                if (!world[x][currH].equals(Tileset.NOTHING)
+                        || !world[x + w][currH].equals(Tileset.NOTHING)) {
+                    continue;
+                }
             }
             if ((h > 3) && (w > 3)) {
                 makeRoom(world, new Position(x, y), w, h);
@@ -118,9 +123,9 @@ public class WorldGenerator {
         // fills in a block 14 tiles wide by 4 tiles tall
 
 
-        world = generateWorld(78155778);
+        world = generateWorld(78155678);
 
-        //makeRoom(world, new Position(3, 4), 4, 4);
+        //makeRoom(world, new Position(worldWidth - 4, worldHeight - 4), 4, 4);
 
         // draws the world to the screen
         ter.renderFrame(world);
