@@ -114,7 +114,7 @@ public class WorldGenerator {
 
         //world = generateWorld(78155778);
 
-        makeRoom(world, new Position(3, 4), 4, 4);
+        //makeRoom(world, new Position(3, 4), 4, 4);
 
         // draws the world to the screen
         ter.renderFrame(world);
