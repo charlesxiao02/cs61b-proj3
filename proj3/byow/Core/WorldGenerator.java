@@ -59,6 +59,11 @@ public class WorldGenerator {
                 roomsGenerated++;
             }
 
+            /*
+            maybe make a hashmap with each room's pos, w, h, connected???
+            to help with the connectedness and hallways
+             */
+
             //adding hallways oh boy
             /*
             pick a point
@@ -66,6 +71,9 @@ public class WorldGenerator {
             if not, pick again
             go along horizontally or vertically until find more floor NOT IN SAME ROOM HOW TO DO THAT
             make hallway???
+            And for more fun:
+            pick two points that AREN'T floor
+            connect!
              */
 
             ter.renderFrame(world);
