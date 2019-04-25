@@ -30,6 +30,7 @@ public class WorldGenerator {
             numHalls = randomGen.nextInt();
         }
 
+        //adding rooms oh man
         int roomsGenerated = 0;
 
         while (roomsGenerated < numRooms) { //rooms can have position from (0, 0) up to (rW - 4, rH - 4)
@@ -57,6 +58,15 @@ public class WorldGenerator {
                 makeRoom(world, new Position(x, y), w, h);
                 roomsGenerated++;
             }
+
+            //adding hallways oh boy
+            /*
+            pick a point
+            if floor, good
+            if not, pick again
+            go along horizontally or vertically until find more floor NOT IN SAME ROOM HOW TO DO THAT
+            make hallway???
+             */
 
             ter.renderFrame(world);
         }
@@ -130,7 +140,7 @@ public class WorldGenerator {
         // fills in a block 14 tiles wide by 4 tiles tall
 
 
-        world = generateWorld(71556728);
+        world = generateWorld(715596728);
 
         //makeRoom(world, new Position(worldWidth - 4, worldHeight - 4), 4, 4);
 
