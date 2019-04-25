@@ -48,20 +48,11 @@ public class WorldGenerator {
             if (y + h > worldHeight) {
                 h = worldHeight - 1 - y;
             }
-            
-            for (int currW = x; currW < x + w + 1; currW++) {
-                if (!world[currW][y].equals(Tileset.NOTHING)
-                        || !world[currW][y + h].equals(Tileset.NOTHING)) {
-                    continue;
-                }
-            }
-            for (int currH = y; currH < y + h + 1; currH++) {
-                if (!world[x][currH].equals(Tileset.NOTHING)
-                        || !world[x + w][currH].equals(Tileset.NOTHING)) {
-                    continue;
-                }
-            }
 
+            //prevent overlap properly
+            if (!checkEdgesUsed(world, new Position(x, y), w, h)) {
+                continue;
+            }
             if ((h > 3) && (w > 3)) {
                 makeRoom(world, new Position(x, y), w, h);
                 roomsGenerated++;
@@ -72,7 +63,22 @@ public class WorldGenerator {
 
         return world;
     }
+   private static boolean checkEdgesUsed(TETile[][] world, Position p, int w, int h){
+        for (int c = 0; c < w; c++) {
+            if (!(world[p.x() + c][p.y()]).equals(Tileset.NOTHING)
+                    || !(world[p.x() + c][p.y() + h - 1]).equals(Tileset.NOTHING)) {
+                return false;
+            }
+        }
+        for (int r = 1; r < h - 1; r++) {
+            if (!(world[p.x()][p.y() + r]).equals(Tileset.NOTHING)
+                    || !(world[p.x() + w - 1][p.y() + r]).equals(Tileset.NOTHING)) {
+                return false;
+            }
+        }
+        return true;
 
+    }
     private static void makeRoom(TETile[][] world, Position p, int w, int h) { //w and h include walls
         for (int r = 1; r < h - 1; r++) {
             for (int c = 1; c < w - 1; c++) {
