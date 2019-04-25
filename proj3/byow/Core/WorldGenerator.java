@@ -30,16 +30,18 @@ public class WorldGenerator {
             numHalls = randomGen.nextInt();
         }
 
-        for (int i = 0; i < numRooms; i++) { //rooms can have position from (1, 1) up to (rW - 3, rH - 3)
-            int x = Math.floorMod(randomGen.nextInt(), worldWidth - 4) + 1;
-            int y = Math.floorMod(randomGen.nextInt(), worldHeight - 4) + 1;
-            while (!(world[x - 1][y - 1].equals(Tileset.NOTHING))
+        int roomsGenerated = 0;
+
+        while (roomsGenerated < numRooms) { //rooms can have position from (0, 0) up to (rW - 4, rH - 4)
+            int x = Math.floorMod(randomGen.nextInt(), worldWidth - 4);
+            int y = Math.floorMod(randomGen.nextInt(), worldHeight - 4);
+            while (!(world[x][y].equals(Tileset.NOTHING))
                     || !(world[x + 3][y + 3].equals(Tileset.NOTHING))) {
-                x = Math.floorMod(randomGen.nextInt(), worldWidth - 4) + 1;
-                y = Math.floorMod(randomGen.nextInt(), worldHeight - 4) + 1;
+                x = Math.floorMod(randomGen.nextInt(), worldWidth - 4);
+                y = Math.floorMod(randomGen.nextInt(), worldHeight - 4);
             }
-            int w = Math.floorMod(randomGen.nextInt(), (worldWidth / 8) - 2) + 2;
-            int h = Math.floorMod(randomGen.nextInt(), (worldHeight / 8) - 2) + 2;
+            int w = Math.floorMod(randomGen.nextInt(), (worldWidth / 8) - 4) + 4;
+            int h = Math.floorMod(randomGen.nextInt(), (worldHeight / 8) - 4) + 4;
             if (x + w > worldWidth - 2) {
                 w = worldWidth - 1 - x;
             }
@@ -54,7 +56,11 @@ public class WorldGenerator {
                     || !(world[x + w + 1][y + h + 1].equals(Tileset.NOTHING))) {
                 w--;
             }
-            makeRoom(world, new Position(x, y), w, h);
+            if ((h > 3) && (w > 3)) {
+                makeRoom(world, new Position(x, y), w, h);
+                roomsGenerated++;
+            }
+
             ter.renderFrame(world);
         }
 
@@ -112,7 +118,7 @@ public class WorldGenerator {
         // fills in a block 14 tiles wide by 4 tiles tall
 
 
-        //world = generateWorld(78155778);
+        world = generateWorld(78155778);
 
         //makeRoom(world, new Position(3, 4), 4, 4);
 
