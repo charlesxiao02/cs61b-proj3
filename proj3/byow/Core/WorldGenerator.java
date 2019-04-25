@@ -40,8 +40,8 @@ public class WorldGenerator {
                 x = Math.floorMod(randomGen.nextInt(), worldWidth - 4);
                 y = Math.floorMod(randomGen.nextInt(), worldHeight - 4);
             }
-            int w = Math.floorMod(randomGen.nextInt(), (worldWidth / 8) - 4) + 4;
-            int h = Math.floorMod(randomGen.nextInt(), (worldHeight / 8) - 4) + 4;
+            int w = Math.floorMod(randomGen.nextInt(), (worldWidth / 5) - 4) + 4;
+            int h = Math.floorMod(randomGen.nextInt(), (worldHeight / 5) - 4) + 4;
             if (x + w > worldWidth) {
                 w = worldWidth - 1 - x;
             }
