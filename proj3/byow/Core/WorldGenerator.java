@@ -10,47 +10,34 @@ import java.util.Random;
 
 public class WorldGenerator {
 
-    private static final int worldWidth = 80;
-    private static final int worldHeight = 40;
+    private static final int WORLD_WIDTH = 80;
+    private static final int WORLD_HEIGHT = 40;
 
     public static TETile[][] generateWorld(long seed) {
-
         Random randomGen = new Random(seed);
-        TETile[][] world = new TETile[worldWidth][worldHeight];
-        for (int r = 0; r < worldHeight; r++) {
-            for (int c = 0; c < worldWidth; c++) {
-                world[c][r] = Tileset.NOTHING;
-            }
-        }
-
-        int numRooms = Math.floorMod(randomGen.nextInt(), ((worldHeight * worldWidth) / 75) - 4) + 4;
-        int numHalls = randomGen.nextInt();
-        while ((numHalls < numRooms) || (numHalls > numRooms * 2)) { //keeping number of hallways enough to connect all rooms but not too crazy
-            numHalls = randomGen.nextInt();
-        }
+        TETile[][] world = new TETile[WORLD_WIDTH][WORLD_HEIGHT];
+        world = initializeWorld(world, WORLD_WIDTH, WORLD_HEIGHT);
+        int numRooms = randomGen.nextInt((WORLD_HEIGHT * WORLD_WIDTH / 75) - 4) + 4;
+        int numHalls = randomGen.nextInt(numRooms) + numRooms + 2;
         WeightedQuickUnionUF rooms = new WeightedQuickUnionUF(numRooms);
         HashMap<Integer, Room> roomNumbers = new HashMap<>();
-        //adding rooms oh man
         int roomsGenerated = 0;
-
-        while (roomsGenerated < numRooms) { //rooms can have position from (0, 0) up to (rW - 4, rH - 4)
-            int x = Math.floorMod(randomGen.nextInt(), worldWidth - 4);
-            int y = Math.floorMod(randomGen.nextInt(), worldHeight - 4);
+        while (roomsGenerated < numRooms) {
+            int x = Math.floorMod(randomGen.nextInt(), WORLD_WIDTH - 4);
+            int y = Math.floorMod(randomGen.nextInt(), WORLD_HEIGHT - 4);
             while (!(world[x][y].equals(Tileset.NOTHING))
                     || !(world[x + 4][y + 4].equals(Tileset.NOTHING))) {
-                x = Math.floorMod(randomGen.nextInt(), worldWidth - 4);
-                y = Math.floorMod(randomGen.nextInt(), worldHeight - 4);
+                x = Math.floorMod(randomGen.nextInt(), WORLD_WIDTH - 4);
+                y = Math.floorMod(randomGen.nextInt(), WORLD_HEIGHT - 4);
             }
-            int w = Math.floorMod(randomGen.nextInt(), (worldWidth / 5) - 4) + 4;
-            int h = Math.floorMod(randomGen.nextInt(), (worldHeight / 5) - 4) + 4;
-            if (x + w > worldWidth) {
-                w = worldWidth - 1 - x;
+            int w = Math.floorMod(randomGen.nextInt(), (WORLD_WIDTH / 5) - 4) + 4;
+            int h = Math.floorMod(randomGen.nextInt(), (WORLD_HEIGHT / 5) - 4) + 4;
+            if (x + w > WORLD_WIDTH) {
+                w = WORLD_WIDTH - 1 - x;
             }
-            if (y + h > worldHeight) {
-                h = worldHeight - 1 - y;
-            }
-
-            //prevent overlap properly
+            if (y + h > WORLD_HEIGHT) {
+                h = WORLD_HEIGHT - 1 - y;
+            } //prevent overlap properly
             if (!checkEdgesUsed(world, new Position(x, y), w, h)) {
                 continue;
             }
@@ -61,10 +48,7 @@ public class WorldGenerator {
                 roomsGenerated++;
             }
         }
-
-
         int hallsGenerated = 0;
-
         while (!allConnected(rooms, numRooms)) {
             int room1 = randomGen.nextInt(numRooms);
             int room2 = randomGen.nextInt(numRooms);
@@ -89,38 +73,49 @@ public class WorldGenerator {
             rooms.union(room1, room2);
             hallsGenerated++;
         }
+        genRandomHalls(hallsGenerated, numHalls, randomGen, world);
+        return world;
+    }
 
+    private static void genRandomHalls(int hallsGenerated, int numHalls,
+                                       Random randomGen, TETile[][] world) {
         while (hallsGenerated < numHalls) {
-            int x = randomGen.nextInt(worldWidth - 3) + 1; //pick random int in world for x
-            int y = randomGen.nextInt(worldHeight - 3) + 1; //same for y
-
+            int x = randomGen.nextInt(WORLD_WIDTH - 3) + 1; //pick random int in world for x
+            int y = randomGen.nextInt(WORLD_HEIGHT - 3) + 1; //same for y
             while (!world[x][y].equals(Tileset.FLOOR)) {
-                x = randomGen.nextInt(worldWidth - 3) + 1;
-                y = randomGen.nextInt(worldHeight - 3) + 1;
+                x = randomGen.nextInt(WORLD_WIDTH - 3) + 1;
+                y = randomGen.nextInt(WORLD_HEIGHT - 3) + 1;
             }
-
             boolean genHorizontalHall = randomGen.nextInt() % 2 == 0;
             if (genHorizontalHall) {
-                int x2 = randomGen.nextInt(worldWidth / 4) + x;
-                if (x2 > worldWidth - 2) {
-                    x2 = worldWidth - 2;
+                int x2 = randomGen.nextInt(WORLD_WIDTH / 4) + x;
+                if (x2 > WORLD_WIDTH - 2) {
+                    x2 = WORLD_WIDTH - 2;
                 }
                 makeHallway(world, new Position(x, y), new Position(x2, y));
                 hallsGenerated++;
             } else {
-                int y2 = randomGen.nextInt(worldHeight / 4) + y;
-                if (y2 > worldHeight - 2) {
-                    y2 = worldHeight - 2;
+                int y2 = randomGen.nextInt(WORLD_HEIGHT / 4) + y;
+                if (y2 > WORLD_HEIGHT - 2) {
+                    y2 = WORLD_HEIGHT - 2;
                 }
                 makeHallway(world, new Position(x, y), new Position(x, y2));
                 hallsGenerated++;
             }
         }
+    }
 
+    private static TETile[][] initializeWorld(TETile[][] world, int w, int h) {
+        world = new TETile[w][h];
+        for (int r = 0; r < w; r++) {
+            for (int c = 0; c < h; c++) {
+                world[r][c] = Tileset.NOTHING;
+            }
+        }
         return world;
     }
 
-   private static boolean checkEdgesUsed(TETile[][] world, Position p, int w, int h){
+    private static boolean checkEdgesUsed(TETile[][] world, Position p, int w, int h) {
         for (int c = 0; c < w; c++) {
             if (!(world[p.x() + c][p.y()]).equals(Tileset.NOTHING)
                     || !(world[p.x() + c][p.y() + h - 1]).equals(Tileset.NOTHING)) {
@@ -147,7 +142,7 @@ public class WorldGenerator {
         return true;
     }
 
-    private static void makeRoom(TETile[][] world, Position p, int w, int h) { //w and h include walls
+    private static void makeRoom(TETile[][] world, Position p, int w, int h) {
         for (int r = 1; r < h - 1; r++) {
             for (int c = 1; c < w - 1; c++) {
                 world[p.x() + c][p.y() + r] = Tileset.FLOOR;
@@ -229,16 +224,17 @@ public class WorldGenerator {
     }
 
 
-     //testing purposes
+    /*
+    //testing purposes
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
-        ter.initialize(worldWidth, worldHeight);
+        ter.initialize(WORLD_WIDTH, WORLD_HEIGHT);
 
         // initialize tiles
-        TETile[][] world = new TETile[worldWidth][worldHeight];
+        TETile[][] world = new TETile[WORLD_WIDTH][WORLD_HEIGHT];
 
-        for (int r = 0; r < worldWidth; r++) {
-            for (int c = 0; c < worldHeight; c++) {
+        for (int r = 0; r < WORLD_WIDTH; r++) {
+            for (int c = 0; c < WORLD_HEIGHT; c++) {
                 world[r][c] = Tileset.NOTHING;
             }
         }
@@ -247,9 +243,8 @@ public class WorldGenerator {
 
         world = generateWorld(8963186996212760330L);
 
-        //makeRoom(world, new Position(worldWidth - 20, worldHeight - 14), 7, 7);
-        //makeHallway(world, new Position(1, worldHeight - 12), new Position(worldWidth - 2, worldHeight - 12));
-        //makeHallway(world, new Position(25, 1), new Position(25, worldHeight - 2));
+        //makeRoom(world, new Position(WORLD_WIDTH- 20, WORLD_HEIGHT - 14), 7, 7);
+        //makeHallway(world, new Position(25, 1), new Position(25, WORLD_HEIGHT - 2));
         //makeHallway(world, new Position(3, 7), new Position(11, 7));
         //makeHallway(world, new Position(11, 7), new Position(11, 15));
         //makeHallway(world, new Position(3, 7), new Position(3, 15));
@@ -257,6 +252,6 @@ public class WorldGenerator {
 
         // draws the world to the screen
         ter.renderFrame(world);
-    }
+    }*/
 
 }

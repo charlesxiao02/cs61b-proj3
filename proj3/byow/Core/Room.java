@@ -8,7 +8,7 @@ public class Room {
     private int width;
     private int height;
 
-    public Room (Position place, int w, int h) {
+    public Room(Position place, int w, int h) {
         location = place;
         width = w;
         height = h;
@@ -46,7 +46,9 @@ public class Room {
             throw new IllegalArgumentException("Must compare Room to Room");
         }
         Room other = (Room) o;
-        return this.location.equals(other.location) && this.width == other.width && this.height == other.height;
+        return this.location.equals(other.location)
+                && this.width == other.width
+                && this.height == other.height;
     }
 
     @Override
