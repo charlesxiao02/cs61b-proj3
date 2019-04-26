@@ -209,5 +209,4 @@ public class WorldGenerator {
         // draws the world to the screen
         ter.renderFrame(world);
     }
-
 }
