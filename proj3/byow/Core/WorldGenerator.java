@@ -32,8 +32,7 @@ public class WorldGenerator {
             numHalls = randomGen.nextInt();
         }
         WeightedQuickUnionUF rooms = new WeightedQuickUnionUF(numRooms);
-        HashMap<Room, Integer> numbers = new HashMap<>();
-        int numberRoom = 0;
+        HashMap<Integer, Room> roomNumbers = new HashMap<>();
         //adding rooms oh man
         int roomsGenerated = 0;
 
@@ -61,8 +60,7 @@ public class WorldGenerator {
             if ((h > 3) && (w > 3)) {
                 makeRoom(world, new Position(x, y), w, h);
                 Room newRoom = new Room(new Position(x, y), w, h);
-                numbers.put(newRoom, numberRoom);
-                numberRoom += 1;
+                roomNumbers.put(roomsGenerated, newRoom);
                 roomsGenerated++;
                 ter.renderFrame(world);
             }
@@ -211,7 +209,8 @@ public class WorldGenerator {
 
         world = generateWorld(715596728);
 
-        //makeRoom(world, new Position(worldWidth - 4, worldHeight - 4), 4, 4);
+        //makeRoom(world, new Position(worldWidth - 20, worldHeight - 14), 7, 7);
+        //makeHallway(world, new Position(worldWidth - 28, worldHeight - 12), new Position(worldWidth - 10, worldHeight - 12));
 
         // draws the world to the screen
         ter.renderFrame(world);
