@@ -97,7 +97,7 @@ public class WorldGenerator {
             if ((spot1.x() == spot2.x()) || (spot1.y() == spot2.y())) {
                 makeHallway(world, spot1, spot2);
             } else {
-                boolean oneWayOrAnother = randomGen.nextBoolean();
+                boolean oneWayOrAnother = randomGen.nextInt() % 2 == 0;
                 Position spot3;
                 if (oneWayOrAnother) {
                     spot3 = new Position(spot1.x(), spot2.y());
@@ -118,7 +118,7 @@ public class WorldGenerator {
                 x = randomGen.nextInt(worldWidth);
                 y = randomGen.nextInt(worldHeight);
             }
-            boolean genHorizontalHall = randomGen.nextBoolean();
+            boolean genHorizontalHall = randomGen.nextInt() % 2 == 0;
             if (genHorizontalHall) {
                 int x2 = randomGen.nextInt(worldWidth / 4) + x;
                 if (x2 > worldWidth) {
@@ -200,12 +200,55 @@ public class WorldGenerator {
                 if (!world[start.x() + 1][start.y() + i].equals(Tileset.FLOOR)) {
                     world[start.x() + 1][start.y() + i] = Tileset.WALL;
                 }
-            }/*
+            }
+            /*
             if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
-                world[end.x() - 1][end.y()] = Tileset.WALL;
-                world[end.x()][end.y()] = Tileset.WALL;
-                world[end.x() + 1][end.y()] = Tileset.WALL;
-            }*/
+                if (end.y() == worldHeight - 1) {
+                    if (!world[end.x() - 1][end.y()].equals(Tileset.FLOOR)) {
+                        world[end.x() - 1][end.y()] = Tileset.WALL;
+                    }
+                    if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
+                        world[end.x()][end.y()] = Tileset.WALL;
+                    }
+                    if (!world[end.x() + 1][end.y()].equals(Tileset.FLOOR)) {
+                        world[end.x() + 1][end.y()] = Tileset.WALL;
+                    }
+                } else {
+                    if (!world[end.x() - 1][end.y() + 1].equals(Tileset.FLOOR)) {
+                        world[end.x() - 1][end.y() + 1] = Tileset.WALL;
+                    }
+                    if (!world[end.x()][end.y() + 1].equals(Tileset.FLOOR)) {
+                        world[end.x()][end.y() + 1] = Tileset.WALL;
+                    }
+                    if (!world[end.x() + 1][end.y() + 1].equals(Tileset.FLOOR)) {
+                        world[end.x() + 1][end.y() + 1] = Tileset.WALL;
+                    }
+                }
+            }
+            if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
+                if (start.y() == 0) {
+                    if (!world[start.x() - 1][start.y()].equals(Tileset.FLOOR)) {
+                        world[start.x() - 1][start.y()] = Tileset.WALL;
+                    }
+                    if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
+                        world[start.x()][start.y()] = Tileset.WALL;
+                    }
+                    if (!world[start.x() + 1][start.y()].equals(Tileset.FLOOR)) {
+                        world[start.x() + 1][start.y()] = Tileset.WALL;
+                    }
+                } else {
+                    if (!world[start.x() - 1][start.y() - 1].equals(Tileset.FLOOR)) {
+                        world[start.x() - 1][start.y() - 1] = Tileset.WALL;
+                    }
+                    if (!world[start.x()][start.y() - 1].equals(Tileset.FLOOR)) {
+                        world[start.x()][start.y() - 1] = Tileset.WALL;
+                    }
+                    if (!world[start.x() + 1][start.y() - 1].equals(Tileset.FLOOR)) {
+                        world[start.x() + 1][start.y() - 1] = Tileset.WALL;
+                    }
+                }
+            }
+            */
         } else { //horizontal hallway
             if (start.x() > end.x()) {
                 Position temp = start;
@@ -221,12 +264,55 @@ public class WorldGenerator {
                 if (!world[start.x() + i][start.y() + 1].equals(Tileset.FLOOR)) {
                     world[start.x() + i][start.y() + 1] = Tileset.WALL;
                 }
-            }/*
+            }
+            /*
             if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
-                world[end.x()][end.y() - 1] = Tileset.WALL;
-                world[end.x()][end.y()] = Tileset.WALL;
-                world[end.x()][end.y() + 1] = Tileset.WALL;
-            }*/
+                if (end.x() == worldWidth - 1) {
+                    if (!world[end.x()][end.y() - 1].equals(Tileset.FLOOR)) {
+                        world[end.x()][end.y() - 1] = Tileset.WALL;
+                    }
+                    if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
+                        world[end.x()][end.y()] = Tileset.WALL;
+                    }
+                    if (!world[end.x()][end.y() + 1].equals(Tileset.FLOOR)) {
+                        world[end.x()][end.y() + 1] = Tileset.WALL;
+                    }
+                } else {
+                    if (!world[end.x() + 1][end.y() - 1].equals(Tileset.FLOOR)) {
+                        world[end.x() + 1][end.y() - 1] = Tileset.WALL;
+                    }
+                    if (!world[end.x() + 1][end.y()].equals(Tileset.FLOOR)) {
+                        world[end.x() + 1][end.y()] = Tileset.WALL;
+                    }
+                    if (!world[end.x() + 1][end.y() + 1].equals(Tileset.FLOOR)) {
+                        world[end.x() + 1][end.y() + 1] = Tileset.WALL;
+                    }
+                }
+            }
+            if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
+                if (start.x() == 0) {
+                    if (!world[start.x()][start.y() - 1].equals(Tileset.FLOOR)) {
+                        world[start.x()][start.y() - 1] = Tileset.WALL;
+                    }
+                    if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
+                        world[start.x()][start.y()] = Tileset.WALL;
+                    }
+                    if (!world[start.x()][start.y() + 1].equals(Tileset.FLOOR)) {
+                        world[start.x()][start.y() + 1] = Tileset.WALL;
+                    }
+                } else {
+                    if (!world[start.x() - 1][start.y() - 1].equals(Tileset.FLOOR)) {
+                        world[start.x() - 1][start.y() - 1] = Tileset.WALL;
+                    }
+                    if (!world[start.x() - 1][start.y()].equals(Tileset.FLOOR)) {
+                        world[start.x() - 1][start.y()] = Tileset.WALL;
+                    }
+                    if (!world[start.x() - 1][start.y() + 1].equals(Tileset.FLOOR)) {
+                        world[start.x() - 1][start.y() + 1] = Tileset.WALL;
+                    }
+                }
+            }
+            */
         }
     }
 
@@ -247,7 +333,7 @@ public class WorldGenerator {
         // fills in a block 14 tiles wide by 4 tiles tall
 
 
-        world = generateWorld(712596728);
+        world = generateWorld(712545728);
 
         //makeRoom(world, new Position(worldWidth - 20, worldHeight - 14), 7, 7);
         //makeHallway(world, new Position(worldWidth - 28, worldHeight - 12), new Position(worldWidth - 10, worldHeight - 12));
