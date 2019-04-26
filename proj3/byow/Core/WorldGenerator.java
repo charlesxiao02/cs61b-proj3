@@ -228,7 +228,7 @@ public class WorldGenerator {
         }
     }
 
-
+    /*
      //testing purposes
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
@@ -259,5 +259,5 @@ public class WorldGenerator {
         // draws the world to the screen
         ter.renderFrame(world);
     }
-
+    */
 }
