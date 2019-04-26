@@ -35,8 +35,7 @@ public class Room {
         return false;
     }
 
-    public Position getRandomSpotInRoom() {
-        Random randomGen = new Random();
+    public Position getRandomSpotInRoom(Random randomGen) {
         int x = randomGen.nextInt(width - 2) + location.x() + 1;
         int y = randomGen.nextInt(height - 2) + location.y() + 1;
         return new Position(x, y);

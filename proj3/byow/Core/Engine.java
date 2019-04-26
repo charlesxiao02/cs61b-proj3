@@ -48,8 +48,7 @@ public class Engine {
 
         //ter.initialize(WIDTH, HEIGHT);
         String firstKey = input.substring(0, 1);
-        long seed = Long.decode(input.substring(1, input.length() - 1));
-        System.out.println(seed);
+        long seed = Long.parseLong(input.substring(1, input.length() - 1));
         String lastKey = input.substring(input.length() - 1);
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
         //ter.renderFrame(finalWorldFrame);

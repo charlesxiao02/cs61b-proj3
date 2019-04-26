@@ -71,8 +71,8 @@ public class WorldGenerator {
             while (rooms.connected(room1, room2)) {
                 room2 = randomGen.nextInt(numRooms);
             }
-            Position spot1 = roomNumbers.get(room1).getRandomSpotInRoom();
-            Position spot2 = roomNumbers.get(room2).getRandomSpotInRoom();
+            Position spot1 = roomNumbers.get(room1).getRandomSpotInRoom(randomGen);
+            Position spot2 = roomNumbers.get(room2).getRandomSpotInRoom(randomGen);
             if ((spot1.x() == spot2.x()) || (spot1.y() == spot2.y())) {
                 makeHallway(world, spot1, spot2);
             } else {
@@ -102,14 +102,14 @@ public class WorldGenerator {
             boolean genHorizontalHall = randomGen.nextInt() % 2 == 0;
             if (genHorizontalHall) {
                 int x2 = randomGen.nextInt(worldWidth / 4) + x;
-                if (x2 > worldWidth) {
+                if (x2 > worldWidth - 2) {
                     x2 = worldWidth - 2;
                 }
                 makeHallway(world, new Position(x, y), new Position(x2, y));
                 hallsGenerated++;
             } else {
                 int y2 = randomGen.nextInt(worldHeight / 4) + y;
-                if (y2 > worldHeight) {
+                if (y2 > worldHeight - 2) {
                     y2 = worldHeight - 2;
                 }
                 makeHallway(world, new Position(x, y), new Position(x, y2));
@@ -228,7 +228,7 @@ public class WorldGenerator {
         }
     }
 
-    /*
+
      //testing purposes
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
@@ -245,8 +245,7 @@ public class WorldGenerator {
 
         // fills in a block 14 tiles wide by 4 tiles tall
 
-
-        world = generateWorld(712565720);
+        world = generateWorld(8963186996212760330L);
 
         //makeRoom(world, new Position(worldWidth - 20, worldHeight - 14), 7, 7);
         //makeHallway(world, new Position(1, worldHeight - 12), new Position(worldWidth - 2, worldHeight - 12));
@@ -259,5 +258,5 @@ public class WorldGenerator {
         // draws the world to the screen
         ter.renderFrame(world);
     }
-    */
+
 }
