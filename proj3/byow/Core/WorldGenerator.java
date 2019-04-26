@@ -3,7 +3,9 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class WorldGenerator {
@@ -29,7 +31,9 @@ public class WorldGenerator {
         while ((numHalls < numRooms) || (numHalls > numRooms * 2)) { //keeping number of hallways enough to connect all rooms but not too crazy
             numHalls = randomGen.nextInt();
         }
-
+        WeightedQuickUnionUF rooms = new WeightedQuickUnionUF(numRooms);
+        HashMap<Room, Integer> numbers = new HashMap<>();
+        int numberRoom = 0;
         //adding rooms oh man
         int roomsGenerated = 0;
 
@@ -56,6 +60,9 @@ public class WorldGenerator {
             }
             if ((h > 3) && (w > 3)) {
                 makeRoom(world, new Position(x, y), w, h);
+                Room newRoom = new Room(new Position(x, y), w, h);
+                numbers.put(newRoom, numberRoom);
+                numberRoom += 1;
                 roomsGenerated++;
                 ter.renderFrame(world);
             }
