@@ -7,7 +7,7 @@ public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int HEIGHT = 40;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -46,10 +46,13 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
+        ter.initialize(WIDTH, HEIGHT);
         String firstKey = input.substring(0, 1);
         long seed = Long.decode(input.substring(1, input.length() - 1));
+        System.out.println(seed);
         String lastKey = input.substring(input.length() - 1);
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
