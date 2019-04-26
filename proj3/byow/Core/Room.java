@@ -1,6 +1,8 @@
 
 package byow.Core;
 
+import java.util.Random;
+
 public class Room {
     private Position location;
     private int width;
@@ -33,6 +35,12 @@ public class Room {
         return false;
     }
 
+    public Position getRandomSpotInRoom() {
+        Random randomGen = new Random();
+        int x = randomGen.nextInt(width - 2) + location.x() + 1;
+        int y = randomGen.nextInt(height - 2) + location.y() + 1;
+        return new Position(x, y);
+    }
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Room)) {
