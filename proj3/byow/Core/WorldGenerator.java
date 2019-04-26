@@ -15,9 +15,6 @@ public class WorldGenerator {
 
     public static TETile[][] generateWorld(long seed) {
 
-        TERenderer ter = new TERenderer();
-        ter.initialize(worldWidth, worldHeight);
-
         Random randomGen = new Random(seed);
         TETile[][] world = new TETile[worldWidth][worldHeight];
         for (int r = 0; r < worldHeight; r++) {
@@ -62,25 +59,7 @@ public class WorldGenerator {
                 Room newRoom = new Room(new Position(x, y), w, h);
                 roomNumbers.put(roomsGenerated, newRoom);
                 roomsGenerated++;
-                ter.renderFrame(world);
             }
-
-            /*
-            maybe make a hashmap with each room's pos, w, h, connected???
-            to help with the connectedness and hallways
-             */
-
-            //adding hallways oh boy
-            /*
-            pick a point
-            if floor, good
-            if not, pick again
-            go along horizontally or vertically until find more floor NOT IN SAME ROOM HOW TO DO THAT
-            make hallway???
-            And for more fun:
-            pick two points that AREN'T floor
-            connect!
-             */
         }
 
 
@@ -112,30 +91,30 @@ public class WorldGenerator {
         }
 
         while (hallsGenerated < numHalls) {
-            int x = randomGen.nextInt(worldWidth); //pick random int in world for x
-            int y = randomGen.nextInt(worldHeight); //same for y
+            int x = randomGen.nextInt(worldWidth - 3) + 1; //pick random int in world for x
+            int y = randomGen.nextInt(worldHeight - 3) + 1; //same for y
+
             while (!world[x][y].equals(Tileset.FLOOR)) {
-                x = randomGen.nextInt(worldWidth);
-                y = randomGen.nextInt(worldHeight);
+                x = randomGen.nextInt(worldWidth - 3) + 1;
+                y = randomGen.nextInt(worldHeight - 3) + 1;
             }
+
             boolean genHorizontalHall = randomGen.nextInt() % 2 == 0;
             if (genHorizontalHall) {
                 int x2 = randomGen.nextInt(worldWidth / 4) + x;
                 if (x2 > worldWidth) {
-                    x2 = worldWidth - 1;
+                    x2 = worldWidth - 2;
                 }
                 makeHallway(world, new Position(x, y), new Position(x2, y));
                 hallsGenerated++;
             } else {
                 int y2 = randomGen.nextInt(worldHeight / 4) + y;
                 if (y2 > worldHeight) {
-                    y2 = worldHeight - 1;
+                    y2 = worldHeight - 2;
                 }
                 makeHallway(world, new Position(x, y), new Position(x, y2));
                 hallsGenerated++;
             }
-
-            ter.renderFrame(world);
         }
 
         return world;
@@ -191,7 +170,21 @@ public class WorldGenerator {
                 start = end;
                 end = temp;
             }
-            int length = Math.abs(start.y() - end.y());
+            if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) { //cap top side
+                for (int i = -1; i < 2; i++) {
+                    if (!world[end.x() + i][end.y() + 1].equals(Tileset.FLOOR)) {
+                        world[end.x() + i][end.y() + 1] = Tileset.WALL;
+                    }
+                }
+            }
+            if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) { //cap bottom side
+                for (int i = -1; i < 2; i++) {
+                    if (!world[start.x() + i][start.y() - 1].equals(Tileset.FLOOR)) {
+                        world[start.x() + i][start.y() - 1] = Tileset.WALL;
+                    }
+                }
+            }
+            int length = Math.abs(start.y() - end.y()) + 1;
             for (int i = 0; i < length; i++) {
                 world[start.x()][start.y() + i] = Tileset.FLOOR;
                 if (!world[start.x() - 1][start.y() + i].equals(Tileset.FLOOR)) {
@@ -201,61 +194,28 @@ public class WorldGenerator {
                     world[start.x() + 1][start.y() + i] = Tileset.WALL;
                 }
             }
-            /*
-            if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
-                if (end.y() == worldHeight - 1) {
-                    if (!world[end.x() - 1][end.y()].equals(Tileset.FLOOR)) {
-                        world[end.x() - 1][end.y()] = Tileset.WALL;
-                    }
-                    if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
-                        world[end.x()][end.y()] = Tileset.WALL;
-                    }
-                    if (!world[end.x() + 1][end.y()].equals(Tileset.FLOOR)) {
-                        world[end.x() + 1][end.y()] = Tileset.WALL;
-                    }
-                } else {
-                    if (!world[end.x() - 1][end.y() + 1].equals(Tileset.FLOOR)) {
-                        world[end.x() - 1][end.y() + 1] = Tileset.WALL;
-                    }
-                    if (!world[end.x()][end.y() + 1].equals(Tileset.FLOOR)) {
-                        world[end.x()][end.y() + 1] = Tileset.WALL;
-                    }
-                    if (!world[end.x() + 1][end.y() + 1].equals(Tileset.FLOOR)) {
-                        world[end.x() + 1][end.y() + 1] = Tileset.WALL;
-                    }
-                }
-            }
-            if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
-                if (start.y() == 0) {
-                    if (!world[start.x() - 1][start.y()].equals(Tileset.FLOOR)) {
-                        world[start.x() - 1][start.y()] = Tileset.WALL;
-                    }
-                    if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
-                        world[start.x()][start.y()] = Tileset.WALL;
-                    }
-                    if (!world[start.x() + 1][start.y()].equals(Tileset.FLOOR)) {
-                        world[start.x() + 1][start.y()] = Tileset.WALL;
-                    }
-                } else {
-                    if (!world[start.x() - 1][start.y() - 1].equals(Tileset.FLOOR)) {
-                        world[start.x() - 1][start.y() - 1] = Tileset.WALL;
-                    }
-                    if (!world[start.x()][start.y() - 1].equals(Tileset.FLOOR)) {
-                        world[start.x()][start.y() - 1] = Tileset.WALL;
-                    }
-                    if (!world[start.x() + 1][start.y() - 1].equals(Tileset.FLOOR)) {
-                        world[start.x() + 1][start.y() - 1] = Tileset.WALL;
-                    }
-                }
-            }
-            */
+
         } else { //horizontal hallway
             if (start.x() > end.x()) {
                 Position temp = start;
                 start = end;
                 end = temp;
             }
-            int length = Math.abs(start.x() - end.x());
+            if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) { //cap left side
+                for (int i = -1; i < 2; i++) {
+                    if (!world[end.x() + 1][end.y() + i].equals(Tileset.FLOOR)) {
+                        world[end.x() + 1][end.y() + i] = Tileset.WALL;
+                    }
+                }
+            }
+            if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) { //cap right side
+                for (int i = -1; i < 2; i++) {
+                    if (!world[start.x() - 1][start.y() + i].equals(Tileset.FLOOR)) {
+                        world[start.x() - 1][start.y() + i] = Tileset.WALL;
+                    }
+                }
+            }
+            int length = Math.abs(start.x() - end.x()) + 1;
             for (int i = 0; i < length; i++) {
                 world[start.x() + i][start.y()] = Tileset.FLOOR;
                 if (!world[start.x() + i][start.y() - 1].equals(Tileset.FLOOR)) {
@@ -265,54 +225,6 @@ public class WorldGenerator {
                     world[start.x() + i][start.y() + 1] = Tileset.WALL;
                 }
             }
-            /*
-            if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
-                if (end.x() == worldWidth - 1) {
-                    if (!world[end.x()][end.y() - 1].equals(Tileset.FLOOR)) {
-                        world[end.x()][end.y() - 1] = Tileset.WALL;
-                    }
-                    if (!world[end.x()][end.y()].equals(Tileset.FLOOR)) {
-                        world[end.x()][end.y()] = Tileset.WALL;
-                    }
-                    if (!world[end.x()][end.y() + 1].equals(Tileset.FLOOR)) {
-                        world[end.x()][end.y() + 1] = Tileset.WALL;
-                    }
-                } else {
-                    if (!world[end.x() + 1][end.y() - 1].equals(Tileset.FLOOR)) {
-                        world[end.x() + 1][end.y() - 1] = Tileset.WALL;
-                    }
-                    if (!world[end.x() + 1][end.y()].equals(Tileset.FLOOR)) {
-                        world[end.x() + 1][end.y()] = Tileset.WALL;
-                    }
-                    if (!world[end.x() + 1][end.y() + 1].equals(Tileset.FLOOR)) {
-                        world[end.x() + 1][end.y() + 1] = Tileset.WALL;
-                    }
-                }
-            }
-            if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
-                if (start.x() == 0) {
-                    if (!world[start.x()][start.y() - 1].equals(Tileset.FLOOR)) {
-                        world[start.x()][start.y() - 1] = Tileset.WALL;
-                    }
-                    if (!world[start.x()][start.y()].equals(Tileset.FLOOR)) {
-                        world[start.x()][start.y()] = Tileset.WALL;
-                    }
-                    if (!world[start.x()][start.y() + 1].equals(Tileset.FLOOR)) {
-                        world[start.x()][start.y() + 1] = Tileset.WALL;
-                    }
-                } else {
-                    if (!world[start.x() - 1][start.y() - 1].equals(Tileset.FLOOR)) {
-                        world[start.x() - 1][start.y() - 1] = Tileset.WALL;
-                    }
-                    if (!world[start.x() - 1][start.y()].equals(Tileset.FLOOR)) {
-                        world[start.x() - 1][start.y()] = Tileset.WALL;
-                    }
-                    if (!world[start.x() - 1][start.y() + 1].equals(Tileset.FLOOR)) {
-                        world[start.x() - 1][start.y() + 1] = Tileset.WALL;
-                    }
-                }
-            }
-            */
         }
     }
 
@@ -333,10 +245,15 @@ public class WorldGenerator {
         // fills in a block 14 tiles wide by 4 tiles tall
 
 
-        world = generateWorld(712545728);
+        world = generateWorld(712565720);
 
         //makeRoom(world, new Position(worldWidth - 20, worldHeight - 14), 7, 7);
-        //makeHallway(world, new Position(worldWidth - 28, worldHeight - 12), new Position(worldWidth - 10, worldHeight - 12));
+        //makeHallway(world, new Position(1, worldHeight - 12), new Position(worldWidth - 2, worldHeight - 12));
+        //makeHallway(world, new Position(25, 1), new Position(25, worldHeight - 2));
+        //makeHallway(world, new Position(3, 7), new Position(11, 7));
+        //makeHallway(world, new Position(11, 7), new Position(11, 15));
+        //makeHallway(world, new Position(3, 7), new Position(3, 15));
+        //makeHallway(world, new Position(3, 15), new Position(11, 15));
 
         // draws the world to the screen
         ter.renderFrame(world);
