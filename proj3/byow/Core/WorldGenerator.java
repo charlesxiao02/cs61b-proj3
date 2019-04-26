@@ -57,6 +57,7 @@ public class WorldGenerator {
             if ((h > 3) && (w > 3)) {
                 makeRoom(world, new Position(x, y), w, h);
                 roomsGenerated++;
+                ter.renderFrame(world);
             }
 
             /*
@@ -76,7 +77,42 @@ public class WorldGenerator {
             connect!
              */
 
-            ter.renderFrame(world);
+            int hallsGenerated = 0;
+            while (hallsGenerated < numHalls) {
+                x = randomGen.nextInt(worldWidth); //pick random int in world for x
+                y = randomGen.nextInt(worldHeight); //same for y
+                while (!world[x][y].equals(Tileset.FLOOR)) {
+                    x = randomGen.nextInt(worldWidth);
+                    y = randomGen.nextInt(worldHeight);
+                }
+                boolean genHorizontalHall = randomGen.nextInt() % 2 == 0;
+                if (genHorizontalHall) {
+                    /*
+                    int x2 = randomGen.nextInt(worldWidth);
+                    while (!world[x2][y].equals(Tileset.NOTHING)) {
+                        x2 = randomGen.nextInt(worldWidth);
+                    }*/
+                    int x2 = randomGen.nextInt(worldWidth / 4) + x;
+                    if (x2 > worldWidth) {
+                        x2 = worldWidth - 1;
+                    }
+                    makeHallway(world, new Position(x, y), new Position(x2, y));
+                    hallsGenerated++;
+                } else {
+                    /*
+                    int y2 = randomGen.nextInt(worldHeight);
+                    while (!world[x][y2].equals(Tileset.NOTHING)) {
+                        y2 = randomGen.nextInt(worldHeight);
+                    }*/
+                    int y2 = randomGen.nextInt(worldHeight / 4) + y;
+                    if (y2 > worldHeight) {
+                        y2 = worldHeight - 1;
+                    }
+                    makeHallway(world, new Position(x, y), new Position(x, y2));
+                    hallsGenerated++;
+                }
+                ter.renderFrame(world);
+            }
         }
 
         return world;
@@ -115,18 +151,36 @@ public class WorldGenerator {
 
     private static void makeHallway(TETile[][] world, Position start, Position end) {
         if (start.x() == end.x()) { //vertical hallway
+            if (start.y() > end.y()) {
+                Position temp = start;
+                start = end;
+                end = temp;
+            }
             int length = Math.abs(start.y() - end.y());
             for (int i = 0; i < length; i++) {
                 world[start.x()][start.y() + i] = Tileset.FLOOR;
-                world[start.x() - 1][start.y() + i] = Tileset.WALL;
-                world[start.x() + 1][start.y() + i] = Tileset.WALL;
+                if (!world[start.x() - 1][start.y() + i].equals(Tileset.FLOOR)) {
+                    world[start.x() - 1][start.y() + i] = Tileset.WALL;
+                }
+                if (!world[start.x() + 1][start.y() + i].equals(Tileset.FLOOR)) {
+                    world[start.x() + 1][start.y() + i] = Tileset.WALL;
+                }
             }
         } else { //horizontal hallway
+            if (start.x() > end.x()) {
+                Position temp = start;
+                start = end;
+                end = temp;
+            }
             int length = Math.abs(start.x() - end.x());
             for (int i = 0; i < length; i++) {
                 world[start.x() + i][start.y()] = Tileset.FLOOR;
-                world[start.x() + i][start.y() - 1] = Tileset.WALL;
-                world[start.x() + i][start.y() + 1] = Tileset.WALL;
+                if (!world[start.x() + i][start.y() - 1].equals(Tileset.FLOOR)) {
+                    world[start.x() + i][start.y() - 1] = Tileset.WALL;
+                }
+                if (!world[start.x() + i][start.y() + 1].equals(Tileset.FLOOR)) {
+                    world[start.x() + i][start.y() + 1] = Tileset.WALL;
+                }
             }
         }
     }
