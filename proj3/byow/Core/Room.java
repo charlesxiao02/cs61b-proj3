@@ -37,4 +37,19 @@ public class Room {
         }
         return false;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Room)) {
+            throw new IllegalArgumentException("Must compare Room to Room");
+        }
+        Room other = (Room) o;
+        return this.location.equals(other.location) && this.width == other.width && this.height == other.height;
+    }
+
+    @Override
+    public int hashCode() {
+        return (location.x() * 53 * 53 * 53) + (location.y() * 53 * 53) + (width * 53) + height;
+    }
+
 }

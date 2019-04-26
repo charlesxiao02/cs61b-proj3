@@ -18,4 +18,13 @@ public class Position {
         return y;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Position)) {
+            throw new IllegalArgumentException("Must compare Position to Position");
+        }
+        Position other = (Position) o;
+        return this.x == other.x && this.y == other.y;
+    }
+
 }
