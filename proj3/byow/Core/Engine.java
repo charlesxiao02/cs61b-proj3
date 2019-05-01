@@ -2,17 +2,21 @@ package byow.Core;
 
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 40;
+    private Avatar player;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -30,17 +34,24 @@ public class Engine {
         //using a txt file??? To track all previous moves?
         //also could help implement a replay for ambition points
 
-        ter.initialize(WIDTH, HEIGHT);
+        ter.initialize(WIDTH, HEIGHT + 2);
+        TETile[][] world = new TETile[WIDTH][HEIGHT];
         drawStartMenu();
-        char key = StdDraw.nextKeyTyped();
         String allKeysPressed = ""; //track keys pressed, either for world loading or ambition points of replay
-        allKeysPressed += key;
         boolean play = true;
         while (play) {
+            char key = ' ';
+            if (StdDraw.hasNextKeyTyped()) {
+                key = StdDraw.nextKeyTyped();
+                allKeysPressed += key;
+            }
             switch (key) {
                 case ':':
                     allKeysPressed += key;
-                    key = StdDraw.nextKeyTyped();
+                    if (StdDraw.hasNextKeyTyped()) {
+                        key = StdDraw.nextKeyTyped();
+                        allKeysPressed += key;
+                    }
                     if (key == 'Q') {
                         allKeysPressed += key;
                         play = false;
@@ -48,6 +59,25 @@ public class Engine {
                         allKeysPressed = allKeysPressed.substring(0, allKeysPressed.length() - 1);
                     }
                     break;
+                case 'N':
+                    String seed = "";
+                    if (StdDraw.hasNextKeyTyped()) {
+                        key = StdDraw.nextKeyTyped();
+                        allKeysPressed += key;
+                    }
+                    while (key != 'S') {
+                        seed += key;
+                        if (StdDraw.hasNextKeyTyped()) {
+                            key = StdDraw.nextKeyTyped();
+                            allKeysPressed += key;
+                        }
+                    }
+                    world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
+                    player = placeAvatar(world);
+                case 'E':
+                    play = false;
+                case 'W':
+
             }
         }
         File savefile = new File("savefile.txt");
@@ -56,7 +86,19 @@ public class Engine {
         } catch (IOException e) {
             System.out.println("Error occured.");
         }
-            }
+    }
+
+    private Avatar placeAvatar(TETile[][] world) {
+        Random r = new Random();
+        int x = r.nextInt(WIDTH - 2) + 1;
+        int y = r.nextInt(HEIGHT - 2) + 1;
+        while (!world[x][y].equals(Tileset.FLOOR)) {
+            x = r.nextInt(WIDTH - 2) + 1;
+            y = r.nextInt(HEIGHT - 2) + 1;
+        }
+        world[x][y] = Tileset.AVATAR;
+        return new Avatar(x, y, world[x][y]);
+    }
 
     private void drawStartMenu() {
         StdDraw.clear(StdDraw.BLACK);
@@ -68,7 +110,7 @@ public class Engine {
         StdDraw.setFont(subtitle);
         StdDraw.text(WIDTH / 2, HEIGHT / 2, "(N)ew Game");
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(L)oad Game");
-        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(Q)uit");
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(E)xit");
         StdDraw.show();
     }
 
@@ -101,12 +143,12 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        //ter.initialize(WIDTH, HEIGHT);
+        ter.initialize(WIDTH, HEIGHT + 2);
         String firstKey = input.substring(0, 1);
         long seed = Long.parseLong(input.substring(1, input.length() - 1));
         String lastKey = input.substring(input.length() - 1);
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
-        //ter.renderFrame(finalWorldFrame);
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
