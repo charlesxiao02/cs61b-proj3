@@ -5,6 +5,8 @@ import byow.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -30,8 +32,31 @@ public class Engine {
 
         ter.initialize(WIDTH, HEIGHT);
         drawStartMenu();
-
-    }
+        char key = StdDraw.nextKeyTyped();
+        String allKeysPressed = ""; //track keys pressed, either for world loading or ambition points of replay
+        allKeysPressed += key;
+        boolean play = true;
+        while (play) {
+            switch (key) {
+                case ':':
+                    allKeysPressed += key;
+                    key = StdDraw.nextKeyTyped();
+                    if (key == 'Q') {
+                        allKeysPressed += key;
+                        play = false;
+                    } else {
+                        allKeysPressed = allKeysPressed.substring(0, allKeysPressed.length() - 1);
+                    }
+                    break;
+            }
+        }
+        File savefile = new File("savefile.txt");
+        try {
+            savefile.createNewFile();
+        } catch (IOException e) {
+            System.out.println("Error occured.");
+        }
+            }
 
     private void drawStartMenu() {
         StdDraw.clear(StdDraw.BLACK);
