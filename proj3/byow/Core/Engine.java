@@ -5,13 +5,11 @@ import byow.InputDemo.KeyboardInputSource;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-import edu.princeton.cs.algs4.ST;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Random;
 
 public class Engine {
@@ -26,33 +24,18 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
-
-        //draw start menu
-        //wait for key
-        //if n, prompt seed
-        //gen world
-        //while next keys not :Q
-        //act accordingly
-        //if l, load from last thing
-        //using a txt file??? To track all previous moves?
-        //also could help implement a replay for ambition points
-
         ter.initialize(WIDTH, HEIGHT + 4);
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         drawStartMenu();
         int mouseX = 0;
         int mouseY = 0;
-        String allKeysPressed = ""; //track keys pressed, either for world loading or ambition points of replay
+        String allKeysPressed = "";
         boolean play = true;
         InputSource inputSource;
         inputSource = new KeyboardInputSource();
         while (play) {
-            char key = ' ';
-            /*if (inputSource.possibleNextInput()) {
-                key = inputSource.getNextKey();
-                allKeysPressed += key;
-            } */
-            if (!StdDraw.hasNextKeyTyped()){
+            char key;
+            if (!StdDraw.hasNextKeyTyped()) {
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
@@ -69,7 +52,8 @@ public class Engine {
                             allKeysPressed += key;
                             play = false;
                         } else {
-                            allKeysPressed = allKeysPressed.substring(0, allKeysPressed.length() - 1);
+                            allKeysPressed = allKeysPressed.substring(0,
+                                    allKeysPressed.length() - 1);
                         }
                         break;
                     case 'N':
@@ -90,6 +74,7 @@ public class Engine {
                         break;
                     case 'E':
                         play = false;
+                        break;
                     case 'W':
                         player.moveAvatar(world, 0, 1);
                         break;
@@ -102,19 +87,6 @@ public class Engine {
                     case 'D':
                         player.moveAvatar(world, 1, 0);
                         break;
-                    /*
-                case 'Q':
-                    player.moveAvatar(world, -1, 1);
-                    break;
-                case 'E':
-                    player.moveAvatar(world, 1, 1);
-                    break;
-                case 'Z':
-                    player.moveAvatar(world, -1, -1);
-                    break;
-                case 'X':
-                    player.moveAvatar(world, 1, -1);
-                    break;*/
                     default:
                         break;
                 }
@@ -122,15 +94,13 @@ public class Engine {
                 mouseX = pointer.x();
                 mouseY = pointer.y();
             }
-        }
-        /*
+        } /*
         File savefile = new File("savefile.txt");
         try {
             savefile.createNewFile();
         } catch (IOException e) {
             System.out.println("Error occured.");
-        }
-        */
+        }*/
     }
 
     private Position updateHUD(int mousex, int mousey, TETile[][] worldinput) {
@@ -140,7 +110,7 @@ public class Engine {
         int newMouseY = (int) StdDraw.mouseY();
         if (newMouseX >= WIDTH) {
             newMouseX = WIDTH - 1;
-        }else if (newMouseY >= HEIGHT) {
+        } else if (newMouseY >= HEIGHT) {
             newMouseY = HEIGHT - 1;
         } else if (newMouseX <= 0) {
             newMouseX = 0;
