@@ -36,7 +36,7 @@ public class Engine {
         //using a txt file??? To track all previous moves?
         //also could help implement a replay for ambition points
 
-        ter.initialize(WIDTH, HEIGHT + 2);
+        ter.initialize(WIDTH, HEIGHT + 4);
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         drawStartMenu();
         String allKeysPressed = ""; //track keys pressed, either for world loading or ambition points of replay
@@ -44,6 +44,14 @@ public class Engine {
         InputSource inputSource;
         inputSource = new KeyboardInputSource();
         while (play) {
+            int mouseX = (int) StdDraw.mouseX();
+            int mouseY = (int) StdDraw.mouseY();
+            System.out.println(mouseX + " " + mouseY);
+            if (world[mouseX][mouseY] != null) {
+                StdDraw.setPenColor(StdDraw.WHITE);
+                StdDraw.text(WIDTH / 4, HEIGHT + 1, world[mouseX][mouseY].description());
+            }
+            System.out.println(mouseX + " " + mouseY);
             char key = ' ';
             if (inputSource.possibleNextInput()) {
                 key = inputSource.getNextKey();
@@ -105,6 +113,8 @@ public class Engine {
                 case 'X':
                     player.moveAvatar(world, 1, -1);
                     break;*/
+                default:
+                    break;
             }
             ter.renderFrame(world);
         }
@@ -174,7 +184,7 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        ter.initialize(WIDTH, HEIGHT + 2);
+        ter.initialize(WIDTH, HEIGHT + 4);
         String firstKey = input.substring(0, 1);
         long seed = Long.parseLong(input.substring(1, input.length() - 1));
         String lastKey = input.substring(input.length() - 1);
