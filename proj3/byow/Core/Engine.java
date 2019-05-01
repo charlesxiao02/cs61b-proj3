@@ -39,23 +39,38 @@ public class Engine {
         ter.initialize(WIDTH, HEIGHT + 4);
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         drawStartMenu();
+        int mouseX = 0;
+        int mouseY = 0;
         String allKeysPressed = ""; //track keys pressed, either for world loading or ambition points of replay
         boolean play = true;
         InputSource inputSource;
         inputSource = new KeyboardInputSource();
         while (play) {
-            int mouseX = (int) StdDraw.mouseX();
-            int mouseY = (int) StdDraw.mouseY();
-            System.out.println(mouseX + " " + mouseY);
-            if (world[mouseX][mouseY] != null) {
-                StdDraw.setPenColor(StdDraw.WHITE);
-                StdDraw.text(WIDTH / 4, HEIGHT + 1, world[mouseX][mouseY].description());
-            }
-            System.out.println(mouseX + " " + mouseY);
             char key = ' ';
             if (inputSource.possibleNextInput()) {
                 key = inputSource.getNextKey();
                 allKeysPressed += key;
+            }
+            while (!StdDraw.hasNextKeyTyped()) {
+                boolean change = false;
+                int newMouseX = (int) StdDraw.mouseX();
+                int newMouseY = (int) StdDraw.mouseY();
+                if (newMouseX == mouseX) {
+                    mouseX = newMouseX;
+                    change = true;
+                    System.out.println(mouseX + " " + mouseY);
+                }
+                if (newMouseY == mouseY) {
+                    mouseY = newMouseY;
+                    change = true;
+                    System.out.println(mouseX + " " + mouseY);
+                }
+                //System.out.println(mouseX + " " + mouseY);
+                if (change && world[mouseX][mouseY] != null) {
+                    StdDraw.setPenColor(StdDraw.WHITE);
+                    StdDraw.text(WIDTH / 4, HEIGHT + 1, world[mouseX][mouseY].description());
+                    System.out.println(mouseX + " " + mouseY);
+                }
             }
             switch (key) {
                 case ':':
@@ -117,6 +132,7 @@ public class Engine {
                     break;
             }
             ter.renderFrame(world);
+            StdDraw.pause(50);
         }
         /*
         File savefile = new File("savefile.txt");
