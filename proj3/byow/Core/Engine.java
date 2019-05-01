@@ -14,6 +14,18 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+
+        //draw start menu
+        //wait for key
+        //if n, prompt seed
+        //gen world
+        //while next keys not :Q
+        //act accordingly
+        //if l, load from last thing
+        //using a txt file??? To track all previous moves?
+        //also could help implement a replay for ambition points
+
+
     }
 
     /**
