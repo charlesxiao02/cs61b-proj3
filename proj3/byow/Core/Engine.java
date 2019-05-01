@@ -1,5 +1,7 @@
 package byow.Core;
 
+import byow.InputDemo.InputSource;
+import byow.InputDemo.KeyboardInputSource;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
@@ -39,16 +41,18 @@ public class Engine {
         drawStartMenu();
         String allKeysPressed = ""; //track keys pressed, either for world loading or ambition points of replay
         boolean play = true;
+        InputSource inputSource;
+        inputSource = new KeyboardInputSource();
         while (play) {
             char key = ' ';
-            if (StdDraw.hasNextKeyTyped()) {
-                key = StdDraw.nextKeyTyped();
+            if (inputSource.possibleNextInput()) {
+                key = inputSource.getNextKey();
                 allKeysPressed += key;
             }
             switch (key) {
                 case ':':
-                    if (StdDraw.hasNextKeyTyped()) {
-                        key = StdDraw.nextKeyTyped();
+                    if (inputSource.possibleNextInput()) {
+                        key = inputSource.getNextKey();
                         allKeysPressed += key;
                     }
                     if (key == 'Q') {
@@ -60,19 +64,20 @@ public class Engine {
                     break;
                 case 'N':
                     String seed = "";
-                    if (StdDraw.hasNextKeyTyped()) {
-                        key = StdDraw.nextKeyTyped();
+                    if (inputSource.possibleNextInput()) {
+                        key = inputSource.getNextKey();
                         allKeysPressed += key;
                     }
                     while (key != 'S') {
                         seed += key;
-                        if (StdDraw.hasNextKeyTyped()) {
-                            key = StdDraw.nextKeyTyped();
+                        if (inputSource.possibleNextInput()) {
+                            key = inputSource.getNextKey();
                             allKeysPressed += key;
                         }
                     }
                     world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
                     player = placeAvatar(world);
+                    break;
                 case 'E':
                     play = false;
                 case 'W':
@@ -101,6 +106,7 @@ public class Engine {
                     player.moveAvatar(world, 1, -1);
                     break;*/
             }
+            ter.renderFrame(world);
         }
         /*
         File savefile = new File("savefile.txt");
