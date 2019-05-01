@@ -118,8 +118,10 @@ public class Engine {
                     default:
                         break;
                 }
-                ter.renderFrame(world);
-                StdDraw.pause(20);
+                Position pointer = updateHUD(mouseX, mouseY, world);
+                mouseX = pointer.x();
+                mouseY = pointer.y();
+                //StdDraw.pause(25);
             }
         }
         /*
@@ -149,25 +151,24 @@ public class Engine {
         if (newMouseX != mousex) {
             mousex = newMouseX;
             change = true;
-            System.out.println(mousex + " " + mousey);
+            //System.out.println(mousex + " " + mousey);
         }
         if (newMouseY != mousey) {
             mousey = newMouseY;
             change = true;
-            System.out.println(mousex + " " + mousey);
+            //System.out.println(mousex + " " + mousey);
         }
         //System.out.println(mouseX + " " + mouseY);
-        if (change && worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
+        if (worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
             StdDraw.clear();
             ter.renderFrame(worldinput);
             StdDraw.setPenColor(StdDraw.WHITE);
             StdDraw.text(3, HEIGHT + 2, worldinput[mousex][mousey].description());
             StdDraw.enableDoubleBuffering();
             StdDraw.show();
-            System.out.println(mousex + " " + mousey);
+            //System.out.println(mousex + " " + mousey);
         }
         //ter.renderFrame(world);
-        StdDraw.pause(20);
         return new Position(mousex, mousey);
     }
     private Avatar placeAvatar(TETile[][] world) {
