@@ -47,7 +47,6 @@ public class Engine {
             }
             switch (key) {
                 case ':':
-                    allKeysPressed += key;
                     if (StdDraw.hasNextKeyTyped()) {
                         key = StdDraw.nextKeyTyped();
                         allKeysPressed += key;
@@ -77,7 +76,29 @@ public class Engine {
                 case 'E':
                     play = false;
                 case 'W':
-
+                    player.moveAvatar(world, 0, 1);
+                    break;
+                case 'A':
+                    player.moveAvatar(world, -1, 0);
+                    break;
+                case 'S':
+                    player.moveAvatar(world, 0, -1);
+                    break;
+                case 'D':
+                    player.moveAvatar(world, 1, 0);
+                    break;
+                case 'Q':
+                    player.moveAvatar(world, -1, 1);
+                    break;
+                case 'E':
+                    player.moveAvatar(world, 1, 1);
+                    break;
+                case 'Z':
+                    player.moveAvatar(world, -1, -1);
+                    break;
+                case 'X':
+                    player.moveAvatar(world, 1, -1);
+                    break;
             }
         }
         File savefile = new File("savefile.txt");
