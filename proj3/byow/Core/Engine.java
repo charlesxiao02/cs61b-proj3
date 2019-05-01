@@ -121,7 +121,6 @@ public class Engine {
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
-                //StdDraw.pause(25);
             }
         }
         /*
@@ -160,7 +159,7 @@ public class Engine {
         }
         //System.out.println(mouseX + " " + mouseY);
         if (worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
-            StdDraw.clear();
+            //StdDraw.clear();
             ter.renderFrame(worldinput);
             StdDraw.setPenColor(StdDraw.WHITE);
             StdDraw.text(3, HEIGHT + 2, worldinput[mousex][mousey].description());
@@ -169,6 +168,7 @@ public class Engine {
             //System.out.println(mousex + " " + mousey);
         }
         //ter.renderFrame(world);
+        StdDraw.pause(20);
         return new Position(mousex, mousey);
     }
     private Avatar placeAvatar(TETile[][] world) {
