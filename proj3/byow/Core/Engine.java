@@ -101,12 +101,14 @@ public class Engine {
                     break;
             }
         }
+        /*
         File savefile = new File("savefile.txt");
         try {
             savefile.createNewFile();
         } catch (IOException e) {
             System.out.println("Error occured.");
         }
+        */
     }
 
     private Avatar placeAvatar(TETile[][] world) {
