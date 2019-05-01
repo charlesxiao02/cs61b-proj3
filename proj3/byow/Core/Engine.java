@@ -87,6 +87,7 @@ public class Engine {
                 case 'D':
                     player.moveAvatar(world, 1, 0);
                     break;
+                    /*
                 case 'Q':
                     player.moveAvatar(world, -1, 1);
                     break;
@@ -98,7 +99,7 @@ public class Engine {
                     break;
                 case 'X':
                     player.moveAvatar(world, 1, -1);
-                    break;
+                    break;*/
             }
         }
         /*
