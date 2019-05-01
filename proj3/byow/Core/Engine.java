@@ -126,14 +126,15 @@ public class Engine {
             x = r.nextInt(WIDTH - 2) + 1;
             y = r.nextInt(HEIGHT - 2) + 1;
         }
+        Avatar avatar = new Avatar(x, y, world[x][y]);
         world[x][y] = Tileset.AVATAR;
-        return new Avatar(x, y, world[x][y]);
+        return avatar;
     }
 
     private void drawStartMenu() {
         StdDraw.clear(StdDraw.BLACK);
-        Font title = new Font("Monaco", Font.BOLD, 32);
-        Font subtitle = new Font("Monaco", Font.PLAIN, 20);
+        Font title = new Font(Font.MONOSPACED, Font.BOLD, 32);
+        Font subtitle = new Font(Font.MONOSPACED, Font.PLAIN, 20);
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.setFont(title);
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 4, "CS61B Project");
