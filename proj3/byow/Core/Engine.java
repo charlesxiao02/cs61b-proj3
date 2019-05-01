@@ -8,8 +8,8 @@ import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Random;
 
 public class Engine {
@@ -31,8 +31,7 @@ public class Engine {
         int mouseY = 0;
         String allKeysPressed = "";
         boolean play = true;
-        InputSource inputSource;
-        inputSource = new KeyboardInputSource();
+        InputSource inputSource = new KeyboardInputSource();
         while (play) {
             char key;
             if (!StdDraw.hasNextKeyTyped()) {
@@ -50,13 +49,45 @@ public class Engine {
                         }
                         if (key == 'Q') {
                             allKeysPressed += key;
-                            play = false;
+                            OutputStream os = null;
+                            try {
+                                os = new FileOutputStream(new File("savefile.txt"));
+                                os.write(allKeysPressed.getBytes());
+                                System.out.println("Save successful");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    os.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            System.exit(0);
                         } else {
                             allKeysPressed = allKeysPressed.substring(0,
                                     allKeysPressed.length() - 1);
                         }
                         break;
+                    case 'L':
+                        try {
+                            FileReader fr = new FileReader(new File("savefile.txt"));
+                            String input = "";
+                            int i;
+                            while ((i = fr.read()) != -1) {
+                                input += (char) i;
+                            }
+                            while (input.charAt(input.length() - 1) == 'Q') {
+                                input = input.substring(0, input.length() - 1);
+                            }
+                            //world = interactWithInputString(input);
+                            System.out.println(input);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     case 'N':
+                        allKeysPressed += key;
                         String seed = "";
                         if (inputSource.possibleNextInput()) {
                             key = inputSource.getNextKey();
@@ -77,15 +108,19 @@ public class Engine {
                         break;
                     case 'W':
                         player.moveAvatar(world, 0, 1);
+                        allKeysPressed += key;
                         break;
                     case 'A':
                         player.moveAvatar(world, -1, 0);
+                        allKeysPressed += key;
                         break;
                     case 'S':
                         player.moveAvatar(world, 0, -1);
+                        allKeysPressed += key;
                         break;
                     case 'D':
                         player.moveAvatar(world, 1, 0);
+                        allKeysPressed += key;
                         break;
                     default:
                         break;
@@ -94,13 +129,7 @@ public class Engine {
                 mouseX = pointer.x();
                 mouseY = pointer.y();
             }
-        } /*
-        File savefile = new File("savefile.txt");
-        try {
-            savefile.createNewFile();
-        } catch (IOException e) {
-            System.out.println("Error occured.");
-        }*/
+        }
     }
 
     private Position updateHUD(int mousex, int mousey, TETile[][] worldinput) {
@@ -142,7 +171,7 @@ public class Engine {
         return new Position(mousex, mousey);
     }
     private Avatar placeAvatar(TETile[][] world) {
-        Random r = new Random();
+        Random r = new Random(10);
         int x = r.nextInt(WIDTH - 2) + 1;
         int y = r.nextInt(HEIGHT - 2) + 1;
         while (!world[x][y].equals(Tileset.FLOOR)) {
