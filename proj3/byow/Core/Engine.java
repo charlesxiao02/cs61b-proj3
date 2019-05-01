@@ -1,10 +1,13 @@
 package byow.Core;
 
-//import byow.TileEngine.TERenderer;
+import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
+
+import java.awt.*;
 
 public class Engine {
-    //TERenderer ter = new TERenderer();
+    TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 40;
@@ -25,7 +28,23 @@ public class Engine {
         //using a txt file??? To track all previous moves?
         //also could help implement a replay for ambition points
 
+        ter.initialize(WIDTH, HEIGHT);
+        drawStartMenu();
 
+    }
+
+    private void drawStartMenu() {
+        StdDraw.clear(StdDraw.BLACK);
+        Font title = new Font("Monaco", Font.BOLD, 32);
+        Font subtitle = new Font("Monaco", Font.PLAIN, 20);
+        StdDraw.setPenColor(StdDraw.WHITE);
+        StdDraw.setFont(title);
+        StdDraw.text(WIDTH / 2, HEIGHT * 3 / 4, "CS61B Project");
+        StdDraw.setFont(subtitle);
+        StdDraw.text(WIDTH / 2, HEIGHT / 2, "(N)ew Game");
+        StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(L)oad Game");
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(Q)uit");
+        StdDraw.show();
     }
 
     /**
