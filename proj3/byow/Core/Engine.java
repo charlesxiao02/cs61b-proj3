@@ -5,6 +5,7 @@ import byow.InputDemo.KeyboardInputSource;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import edu.princeton.cs.algs4.ST;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
@@ -47,74 +48,60 @@ public class Engine {
         inputSource = new KeyboardInputSource();
         while (play) {
             char key = ' ';
-            if (inputSource.possibleNextInput()) {
+            /*if (inputSource.possibleNextInput()) {
                 key = inputSource.getNextKey();
                 allKeysPressed += key;
-            }
-            while (!StdDraw.hasNextKeyTyped()) {
-                boolean change = false;
-                int newMouseX = (int) StdDraw.mouseX();
-                int newMouseY = (int) StdDraw.mouseY();
-                if (newMouseX == mouseX) {
-                    mouseX = newMouseX;
-                    change = true;
-                    System.out.println(mouseX + " " + mouseY);
-                }
-                if (newMouseY == mouseY) {
-                    mouseY = newMouseY;
-                    change = true;
-                    System.out.println(mouseX + " " + mouseY);
-                }
-                //System.out.println(mouseX + " " + mouseY);
-                if (change && world[mouseX][mouseY] != null) {
-                    StdDraw.setPenColor(StdDraw.WHITE);
-                    StdDraw.text(WIDTH / 4, HEIGHT + 1, world[mouseX][mouseY].description());
-                    System.out.println(mouseX + " " + mouseY);
-                }
-            }
-            switch (key) {
-                case ':':
-                    if (inputSource.possibleNextInput()) {
-                        key = inputSource.getNextKey();
-                        allKeysPressed += key;
-                    }
-                    if (key == 'Q') {
-                        allKeysPressed += key;
-                        play = false;
-                    } else {
-                        allKeysPressed = allKeysPressed.substring(0, allKeysPressed.length() - 1);
-                    }
-                    break;
-                case 'N':
-                    String seed = "";
-                    if (inputSource.possibleNextInput()) {
-                        key = inputSource.getNextKey();
-                        allKeysPressed += key;
-                    }
-                    while (key != 'S') {
-                        seed += key;
+            } */
+            if (!StdDraw.hasNextKeyTyped()){
+                Position pointer = updateHUD(mouseX, mouseY, world);
+                mouseX = pointer.x();
+                mouseY = pointer.y();
+            } else {
+                char c = Character.toUpperCase(StdDraw.nextKeyTyped());
+                key = c;
+                switch (key) {
+                    case ':':
                         if (inputSource.possibleNextInput()) {
                             key = inputSource.getNextKey();
                             allKeysPressed += key;
                         }
-                    }
-                    world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
-                    player = placeAvatar(world);
-                    break;
-                case 'E':
-                    play = false;
-                case 'W':
-                    player.moveAvatar(world, 0, 1);
-                    break;
-                case 'A':
-                    player.moveAvatar(world, -1, 0);
-                    break;
-                case 'S':
-                    player.moveAvatar(world, 0, -1);
-                    break;
-                case 'D':
-                    player.moveAvatar(world, 1, 0);
-                    break;
+                        if (key == 'Q') {
+                            allKeysPressed += key;
+                            play = false;
+                        } else {
+                            allKeysPressed = allKeysPressed.substring(0, allKeysPressed.length() - 1);
+                        }
+                        break;
+                    case 'N':
+                        String seed = "";
+                        if (inputSource.possibleNextInput()) {
+                            key = inputSource.getNextKey();
+                            allKeysPressed += key;
+                        }
+                        while (key != 'S') {
+                            seed += key;
+                            if (inputSource.possibleNextInput()) {
+                                key = inputSource.getNextKey();
+                                allKeysPressed += key;
+                            }
+                        }
+                        world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
+                        player = placeAvatar(world);
+                        break;
+                    case 'E':
+                        play = false;
+                    case 'W':
+                        player.moveAvatar(world, 0, 1);
+                        break;
+                    case 'A':
+                        player.moveAvatar(world, -1, 0);
+                        break;
+                    case 'S':
+                        player.moveAvatar(world, 0, -1);
+                        break;
+                    case 'D':
+                        player.moveAvatar(world, 1, 0);
+                        break;
                     /*
                 case 'Q':
                     player.moveAvatar(world, -1, 1);
@@ -128,11 +115,12 @@ public class Engine {
                 case 'X':
                     player.moveAvatar(world, 1, -1);
                     break;*/
-                default:
-                    break;
+                    default:
+                        break;
+                }
+                ter.renderFrame(world);
+                StdDraw.pause(20);
             }
-            ter.renderFrame(world);
-            StdDraw.pause(50);
         }
         /*
         File savefile = new File("savefile.txt");
@@ -144,6 +132,42 @@ public class Engine {
         */
     }
 
+    private Position updateHUD(int mousex, int mousey, TETile[][] worldinput) {
+        StdDraw.enableDoubleBuffering();
+        boolean change = false;
+        int newMouseX = (int) StdDraw.mouseX();
+        int newMouseY = (int) StdDraw.mouseY();
+        if (newMouseX >= WIDTH) {
+            newMouseX = WIDTH - 1;
+        }else if (newMouseY >= HEIGHT) {
+            newMouseY = HEIGHT - 1;
+        } else if (newMouseX <= 0) {
+            newMouseX = 0;
+        } else if (newMouseY <= 0) {
+            newMouseY = 0;
+        }
+        if (newMouseX != mousex) {
+            mousex = newMouseX;
+            change = true;
+            System.out.println(mousex + " " + mousey);
+        }
+        if (newMouseY != mousey) {
+            mousey = newMouseY;
+            change = true;
+            System.out.println(mousex + " " + mousey);
+        }
+        //System.out.println(mouseX + " " + mouseY);
+        if (change && worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
+            StdDraw.setPenColor(StdDraw.WHITE);
+            StdDraw.text(3, HEIGHT + 2, worldinput[mousex][mousey].description());
+            StdDraw.enableDoubleBuffering();
+            StdDraw.show();
+            System.out.println(mousex + " " + mousey);
+        }
+        //ter.renderFrame(world);
+        StdDraw.pause(20);
+        return new Position(mousex, mousey);
+    }
     private Avatar placeAvatar(TETile[][] world) {
         Random r = new Random();
         int x = r.nextInt(WIDTH - 2) + 1;
