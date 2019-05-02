@@ -176,7 +176,8 @@ public class Engine {
         }
         //System.out.println(mouseX + " " + mouseY);
         if (worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
-            //StdDraw.clear(); /*
+            //StdDraw.clear();
+            /*
             ter.renderFrame(worldinput);
             StdDraw.setPenColor(StdDraw.WHITE);
             StdDraw.text(6, HEIGHT + 2, worldinput[mousex][mousey].description());
