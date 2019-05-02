@@ -239,10 +239,46 @@ public class Engine {
         int index = 1;
         while (input.charAt(index) > 47 && input.charAt(index) < 58) {
             seedString += input.charAt(index);
+            index++;
         }
         Long seed = Long.parseLong(seedString);
+        index++;
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
         //ter.renderFrame(finalWorldFrame);
+        while (index < input.length()) {
+            char key = input.charAt(index);
+            switch (key) {
+                case ':':
+                    key = input.charAt(index);
+                    if (key == 'Q') {
+                        saveToFile(finalWorldFrame, player);
+                        System.exit(0);
+                    }
+                    break;
+                case 'L':
+                    Object[] loaded = loadFromFile();
+                    finalWorldFrame = (TETile[][]) loaded[0];
+                    player = (Avatar) loaded[1];
+                    break;
+                case 'E':
+                    System.exit(0);
+                    break;
+                case 'W':
+                    player.moveAvatar(finalWorldFrame, 0, 1);
+                    break;
+                case 'A':
+                    player.moveAvatar(finalWorldFrame, -1, 0);
+                    break;
+                case 'S':
+                    player.moveAvatar(finalWorldFrame, 0, -1);
+                    break;
+                case 'D':
+                    player.moveAvatar(finalWorldFrame, 1, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
         return finalWorldFrame;
     }
 }
