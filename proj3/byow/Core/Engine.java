@@ -102,6 +102,7 @@ public class Engine {
                         }
                         world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
                         player = placeAvatar(world);
+                        placeDoorandKeyBox(world);
                         break;
                     case 'E':
                         play = false;
@@ -161,7 +162,7 @@ public class Engine {
             //StdDraw.clear();
             ter.renderFrame(worldinput);
             StdDraw.setPenColor(StdDraw.WHITE);
-            StdDraw.text(3, HEIGHT + 2, worldinput[mousex][mousey].description());
+            StdDraw.text(6, HEIGHT + 2, worldinput[mousex][mousey].description());
             StdDraw.enableDoubleBuffering();
             StdDraw.show();
             //System.out.println(mousex + " " + mousey);
@@ -181,6 +182,74 @@ public class Engine {
         Avatar avatar = new Avatar(x, y, world[x][y]);
         world[x][y] = Tileset.AVATAR;
         return avatar;
+    }
+
+    private void placeDoorandKeyBox(TETile[][] world) {
+        Random r = new Random(HEIGHT);
+        int x = r.nextInt(WIDTH - 2) + 1;
+        int y = r.nextInt(HEIGHT - 2) + 1;
+        while (true) {
+            while (!world[x][y].equals(Tileset.WALL)) {
+                x = r.nextInt(WIDTH - 2) + 1;
+                y = r.nextInt(HEIGHT - 2) + 1;
+            }
+            if (isValidDoorPlace(x, y, world)) {
+                world[x][y] = Tileset.LOCKED_DOOR;
+               break;
+            }
+        }
+        while (!world[x][y].equals(Tileset.FLOOR)) {
+            x = r.nextInt(WIDTH - 2) + 1;
+            y = r.nextInt(HEIGHT - 2) + 1;
+        }
+        world[x][y] = Tileset.KEY;
+    }
+    private boolean isValidDoorPlace(int x, int y, TETile[][] world) {
+        boolean valid = false;
+        if (x > 0 && x < (WIDTH - 1) && y > 0 && y < (HEIGHT - 1)) {
+                if ((world[x][y + 1].equals(Tileset.FLOOR) && world[x][y - 1].equals(Tileset.NOTHING))){
+                    valid = true;
+                    return valid;
+                } else if((world[x][y + 1].equals(Tileset.NOTHING) && world[x][y - 1].equals(Tileset.FLOOR))) {
+                    valid = true;
+                    return valid;
+                }else if ((world[x + 1][y].equals(Tileset.FLOOR) && world[x - 1][y].equals(Tileset.NOTHING))){
+                    valid = true;
+                    return valid;
+                } else if((world[x - 1][y].equals(Tileset.NOTHING) && world[x - 1][y].equals(Tileset.FLOOR))) {
+                    valid = true;
+                    return valid;
+                }
+        }
+        switch (x) {
+          case 0:
+              if (world[x + 1][y].equals(Tileset.FLOOR)) {
+                  valid = true;
+                  return valid;
+                 // break;
+              }
+          case (WIDTH - 1):
+                if (world[x - 1][y].equals(Tileset.FLOOR)) {
+                    valid = true;
+                    return valid;
+                  //  break;
+                }
+        }
+        switch (y) {
+            case 0:
+                if (world[x][y + 1].equals(Tileset.FLOOR)) {
+                    valid = true;
+                    return valid;
+                   // break;
+                }
+            case (HEIGHT - 1):
+                if (world[x][y - 1].equals(Tileset.FLOOR)) {
+                    valid = true;
+                    return valid;
+                    //break;
+                }
+        }
+        return valid;
     }
 
     private void drawStartMenu() {
