@@ -2,7 +2,8 @@ package byow.Core;
 
 import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
-//import byow.TileEngine.TERenderer;
+import byow.SaveDemo.World;
+import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
@@ -12,7 +13,7 @@ import java.io.*;
 import java.util.Random;
 
 public class Engine {
-    //TERenderer ter = new TERenderer();
+    TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 40;
@@ -26,11 +27,12 @@ public class Engine {
      */
     public void interactWithKeyboard() {
         worldsTraveled = 0;
-        //ter.initialize(WIDTH, HEIGHT + 4);
+        ter.initialize(WIDTH, HEIGHT + 4);
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         drawStartMenu();
         int mouseX = 0;
         int mouseY = 0;
+        Random r;
         boolean play = true;
         InputSource inputSource = new KeyboardInputSource();
         while (play) {
@@ -56,6 +58,9 @@ public class Engine {
                         Object[] loaded = loadFromFile();
                         world = (TETile[][]) loaded[0];
                         player = (Avatar) loaded[1];
+                        r = new Random(20);
+                        Long start = r.nextLong();
+                      //  WorldGenerator.placeDoorandKeyBox(world, start);
                         break;
                     case 'N':
                         String seed = "";
@@ -88,16 +93,23 @@ public class Engine {
                         break;
                     default:
                         break;
-                } /*
+                }
                 if (player.enteredDoor()) {
-                    Long newSeed = WorldGenerator.getRandomGen(world).nextLong();
+                    Long newSeed;
+               //     Long newSeed = WorldGenerator.getRandomGen(world).nextLong();
+                    try {
+                        newSeed = WorldGenerator.getRandomGen(world).nextLong();
+                    } catch (NullPointerException e) {
+                        r = new Random(player.position().x() * player.position().y());
+                        newSeed = r.nextLong();
+                    }
                     world = WorldGenerator.generateWorld(newSeed);
                     player = placeAvatar(world);
                     worldsTraveled++;
                     if (worldsTraveled == LIMIT) {
                         System.exit(0);
                     }
-                } */
+                }
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
@@ -121,7 +133,7 @@ public class Engine {
     private void saveToFile(TETile[][] input1, Avatar input2) {
         ObjectOutputStream os = null;
         try {
-            os = new ObjectOutputStream(new FileOutputStream(new File("savefile.txt")));
+            os = new ObjectOutputStream(new FileOutputStream("savefile.txt"));
             os.writeObject(input1);
             os.writeObject(input2);
             System.out.println("Save successful");
@@ -152,7 +164,7 @@ public class Engine {
 
     private Position updateHUD(int mousex, int mousey, TETile[][] worldinput) {
         StdDraw.enableDoubleBuffering();
-        /*
+
         boolean change = false;
         int newMouseX = (int) StdDraw.mouseX();
         int newMouseY = (int) StdDraw.mouseY();
@@ -188,12 +200,12 @@ public class Engine {
         }
         //ter.renderFrame(world);
         StdDraw.pause(20);
-        */
+
         return new Position(mousex, mousey);
     }
 
     private void drawStartMenu() {
-        /*
+
         StdDraw.clear(StdDraw.BLACK);
         Font title = new Font(Font.MONOSPACED, Font.BOLD, 32);
         Font subtitle = new Font(Font.MONOSPACED, Font.PLAIN, 20);
@@ -205,7 +217,7 @@ public class Engine {
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(L)oad Game");
         StdDraw.text(WIDTH / 2, HEIGHT / 4, "(E)xit");
         StdDraw.show();
-        */
+
     }
 
     /**
@@ -237,14 +249,14 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        //ter.initialize(WIDTH, HEIGHT + 4);
+        ter.initialize(WIDTH, HEIGHT + 4);
         if (input.length() == 0) {
             return null;
         }
         String firstKey = input.substring(0, 1);
         int index = 1;
         TETile[][] finalWorldFrame = null;
-        if (!firstKey.equals("L")) {
+        if (!firstKey.equals("l") && !firstKey.equals("L")) {
             String seedString = "";
             while (input.charAt(index) > 47 && input.charAt(index) < 58) {
                 seedString += input.charAt(index);
@@ -254,13 +266,20 @@ public class Engine {
             index++;
             finalWorldFrame = WorldGenerator.generateWorld(seed);
             player = placeAvatar(finalWorldFrame);
+        } else if (firstKey.equals("l") || firstKey.equals("L")) {
+            Object[] loaded = loadFromFile();
+            finalWorldFrame = (TETile[][]) loaded[0];
+            player = (Avatar) loaded[1];
         }
-        //ter.renderFrame(finalWorldFrame);
-        while (index < input.length()) {
-            char key = input.charAt(index);
+        ter.renderFrame(finalWorldFrame);
+       // ter.renderFrame(finalWorldFrame);
+        while (index < input.length() + 1) {
+            char key = input.charAt(index - 1);
+            key = Character.toUpperCase(key);
             switch (key) {
                 case ':':
                     key = input.charAt(index);
+                    key = Character.toUpperCase(key);
                     if (key == 'Q') {
                         saveToFile(finalWorldFrame, player);
                         System.exit(0);
@@ -275,22 +294,25 @@ public class Engine {
                     System.exit(0);
                     break;
                 case 'W':
-                    player.moveAvatar(finalWorldFrame, 0, 1);
+                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 0, 1);
                     break;
                 case 'A':
-                    player.moveAvatar(finalWorldFrame, -1, 0);
+                    finalWorldFrame = player.moveAvatar(finalWorldFrame, -1, 0);
                     break;
                 case 'S':
-                    player.moveAvatar(finalWorldFrame, 0, -1);
+                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 0, -1);
                     break;
                 case 'D':
-                    player.moveAvatar(finalWorldFrame, 1, 0);
+                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 1, 0);
                     break;
                 default:
                     break;
             }
             index++;
+           // ter.renderFrame(finalWorldFrame);
+            ter.renderFrame(finalWorldFrame);
         }
+        //ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }

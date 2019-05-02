@@ -75,15 +75,36 @@ public class WorldGenerator {
             hallsGenerated++;
         }
         genRandomHalls(hallsGenerated, numHalls, world);
-        //placeDoorandKeyBox(world);
+        placeDoorandKeyBox(world);
         return world;
     }
 
     public static Random getRandomGen(TETile[][] world) {
         return randomGen;
     }
-/*
-    private static void placeDoorandKeyBox(TETile[][] world) {
+
+    public static void placeDoorandKeyBox(TETile[][] world) {
+        int x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
+        int y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
+        while (true) {
+            while (!world[x][y].equals(Tileset.WALL)) {
+                x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
+                y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
+            }
+            if (isValidDoorPlace(x, y, world)) {
+                world[x][y] = Tileset.LOCKED_DOOR;
+                break;
+            }
+        }
+        while (!world[x][y].equals(Tileset.FLOOR)) {
+            x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
+            y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
+        }
+        world[x][y] = Tileset.KEY;
+    }
+
+    public static void placeDoorandKeyBox(TETile[][] world, Long seed) {
+        randomGen = new Random(seed);
         int x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
         int y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
         while (true) {
@@ -144,7 +165,7 @@ public class WorldGenerator {
         }
         return valid;
     }
-*/
+
     private static void genRandomHalls(int hallsGenerated, int numHalls, TETile[][] world) {
         while (hallsGenerated < numHalls) {
             int x = randomGen.nextInt(WORLD_WIDTH - 3) + 1; //pick random int in world for x
