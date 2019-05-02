@@ -192,6 +192,11 @@ public class TETile implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        return this.textColor.hashCode() * 100 + this.backgroundColor.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof TETile)) {
             throw new IllegalArgumentException();
