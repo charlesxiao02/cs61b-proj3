@@ -244,7 +244,7 @@ public class Engine {
         String firstKey = input.substring(0, 1);
         int index = 1;
         TETile[][] finalWorldFrame = null;
-        if (firstKey != "L") {
+        if (firstKey.equals("L")) {
             String seedString = "";
             while (input.charAt(index) > 47 && input.charAt(index) < 58) {
                 seedString += input.charAt(index);
