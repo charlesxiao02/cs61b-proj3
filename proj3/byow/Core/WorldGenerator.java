@@ -106,20 +106,16 @@ public class WorldGenerator {
     private static boolean isValidDoorPlace(int x, int y, TETile[][] world) {
         boolean valid = false;
         if (x > 0 && x < (WORLD_WIDTH - 1) && y > 0 && y < (WORLD_HEIGHT - 1)) {
-            if ((world[x][y + 1].equals(Tileset.FLOOR)
-                    && world[x][y - 1].equals(Tileset.NOTHING))) {
+            if ((world[x][y + 1].equals(Tileset.FLOOR))) {
                 valid = true;
                 return valid;
-            } else if ((world[x][y + 1].equals(Tileset.NOTHING)
-                    && world[x][y - 1].equals(Tileset.FLOOR))) {
+            } else if (world[x][y - 1].equals(Tileset.FLOOR)) {
                 valid = true;
                 return valid;
-            } else if ((world[x + 1][y].equals(Tileset.FLOOR)
-                    && world[x - 1][y].equals(Tileset.NOTHING))) {
+            } else if (world[x + 1][y].equals(Tileset.FLOOR)) {
                 valid = true;
                 return valid;
-            } else if ((world[x - 1][y].equals(Tileset.NOTHING)
-                    && world[x - 1][y].equals(Tileset.FLOOR))) {
+            } else if (world[x - 1][y].equals(Tileset.FLOOR)) {
                 valid = true;
                 return valid;
             }

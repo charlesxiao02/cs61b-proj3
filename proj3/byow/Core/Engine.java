@@ -2,7 +2,7 @@ package byow.Core;
 
 import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
-//import byow.TileEngine.TERenderer;
+import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
@@ -12,7 +12,7 @@ import java.io.*;
 import java.util.Random;
 
 public class Engine {
-    //TERenderer ter = new TERenderer();
+    TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 40;
@@ -26,7 +26,7 @@ public class Engine {
      */
     public void interactWithKeyboard() {
         worldsTraveled = 0;
-        //ter.initialize(WIDTH, HEIGHT + 4);
+        ter.initialize(WIDTH, HEIGHT + 4);
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         drawStartMenu();
         int mouseX = 0;
@@ -176,21 +176,21 @@ public class Engine {
         }
         //System.out.println(mouseX + " " + mouseY);
         if (worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
-            //StdDraw.clear();
-            /*
+            StdDraw.clear();
+
             ter.renderFrame(worldinput);
             StdDraw.setPenColor(StdDraw.WHITE);
             StdDraw.text(6, HEIGHT + 2, worldinput[mousex][mousey].description());
             StdDraw.enableDoubleBuffering();
-            StdDraw.show(); */
+            StdDraw.show();
             //System.out.println(mousex + " " + mousey);
         }
         //ter.renderFrame(world);
-        //StdDraw.pause(20);
+        StdDraw.pause(20);
         return new Position(mousex, mousey);
     }
 
-    private void drawStartMenu() { /*
+    private void drawStartMenu() {
         StdDraw.clear(StdDraw.BLACK);
         Font title = new Font(Font.MONOSPACED, Font.BOLD, 32);
         Font subtitle = new Font(Font.MONOSPACED, Font.PLAIN, 20);
@@ -201,7 +201,7 @@ public class Engine {
         StdDraw.text(WIDTH / 2, HEIGHT / 2, "(N)ew Game");
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(L)oad Game");
         StdDraw.text(WIDTH / 2, HEIGHT / 4, "(E)xit");
-        StdDraw.show();*/
+        StdDraw.show();
     }
 
     /**
@@ -233,7 +233,7 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        //ter.initialize(WIDTH, HEIGHT + 4);
+        ter.initialize(WIDTH, HEIGHT + 4);
         String firstKey = input.substring(0, 1);
         String seedString = "";
         int index = 1;
@@ -244,7 +244,7 @@ public class Engine {
         Long seed = Long.parseLong(seedString);
         index++;
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
-        //ter.renderFrame(finalWorldFrame);
+        ter.renderFrame(finalWorldFrame);
         while (index < input.length()) {
             char key = input.charAt(index);
             switch (key) {
