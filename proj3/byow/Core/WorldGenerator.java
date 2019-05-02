@@ -12,9 +12,11 @@ public class WorldGenerator {
 
     private static final int WORLD_WIDTH = 80;
     private static final int WORLD_HEIGHT = 40;
+    private static Random randomGen;
+    private static Avatar player;
 
     public static TETile[][] generateWorld(long seed) {
-        Random randomGen = new Random(seed);
+        randomGen = new Random(seed);
         TETile[][] world = new TETile[WORLD_WIDTH][WORLD_HEIGHT];
         world = initializeWorld(world, WORLD_WIDTH, WORLD_HEIGHT);
         int numRooms = randomGen.nextInt((WORLD_HEIGHT * WORLD_WIDTH / 75) - 4) + 4;
@@ -74,7 +76,98 @@ public class WorldGenerator {
             hallsGenerated++;
         }
         genRandomHalls(hallsGenerated, numHalls, randomGen, world);
+        player = WorldGenerator.placeAvatar(world);
+        placeDoorandKeyBox(world);
         return world;
+    }
+
+    public static Random getRandomGen(TETile[][] world) {
+        return randomGen;
+    }
+
+    public static Avatar getPlayer(TETile[][] world) {
+        return player;
+    }
+
+    private static Avatar placeAvatar(TETile[][] world) {
+        Random r = new Random(10);
+        int x = r.nextInt(WORLD_WIDTH - 2) + 1;
+        int y = r.nextInt(WORLD_HEIGHT - 2) + 1;
+        while (!world[x][y].equals(Tileset.FLOOR)) {
+            x = r.nextInt(WORLD_WIDTH - 2) + 1;
+            y = r.nextInt(WORLD_HEIGHT - 2) + 1;
+        }
+        Avatar avatar = new Avatar(x, y, world[x][y]);
+        world[x][y] = Tileset.AVATAR;
+        return avatar;
+    }
+
+    private static void placeDoorandKeyBox(TETile[][] world) {
+        int x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
+        int y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
+        while (true) {
+            while (!world[x][y].equals(Tileset.WALL)) {
+                x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
+                y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
+            }
+            if (isValidDoorPlace(x, y, world)) {
+                world[x][y] = Tileset.LOCKED_DOOR;
+                break;
+            }
+        }
+        while (!world[x][y].equals(Tileset.FLOOR)) {
+            x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
+            y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
+        }
+        world[x][y] = Tileset.KEY;
+    }
+
+    private static boolean isValidDoorPlace(int x, int y, TETile[][] world) {
+        boolean valid = false;
+        if (x > 0 && x < (WORLD_WIDTH - 1) && y > 0 && y < (WORLD_HEIGHT - 1)) {
+            if ((world[x][y + 1].equals(Tileset.FLOOR) && world[x][y - 1].equals(Tileset.NOTHING))){
+                valid = true;
+                return valid;
+            } else if((world[x][y + 1].equals(Tileset.NOTHING) && world[x][y - 1].equals(Tileset.FLOOR))) {
+                valid = true;
+                return valid;
+            }else if ((world[x + 1][y].equals(Tileset.FLOOR) && world[x - 1][y].equals(Tileset.NOTHING))){
+                valid = true;
+                return valid;
+            } else if((world[x - 1][y].equals(Tileset.NOTHING) && world[x - 1][y].equals(Tileset.FLOOR))) {
+                valid = true;
+                return valid;
+            }
+        }
+        switch (x) {
+            case 0:
+                if (world[x + 1][y].equals(Tileset.FLOOR)) {
+                    valid = true;
+                    return valid;
+                    // break;
+                }
+            case (WORLD_WIDTH - 1):
+                if (world[x - 1][y].equals(Tileset.FLOOR)) {
+                    valid = true;
+                    return valid;
+                    //  break;
+                }
+        }
+        switch (y) {
+            case 0:
+                if (world[x][y + 1].equals(Tileset.FLOOR)) {
+                    valid = true;
+                    return valid;
+                    // break;
+                }
+            case (WORLD_HEIGHT - 1):
+                if (world[x][y - 1].equals(Tileset.FLOOR)) {
+                    valid = true;
+                    return valid;
+                    //break;
+                }
+        }
+        return valid;
     }
 
     private static void genRandomHalls(int hallsGenerated, int numHalls,

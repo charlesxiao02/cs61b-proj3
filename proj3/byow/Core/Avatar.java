@@ -5,17 +5,24 @@ import byow.TileEngine.Tileset;
 
 public class Avatar {
 
+    private static final int LIMIT = 4;
     private Position position;
     private TETile currTile;
+    private boolean hasKey;
+    private int worldsTraveled;
 
     public Avatar(Position p, TETile t) {
         position = p;
         currTile = t;
+        hasKey = false;
+        worldsTraveled = 0;
     }
 
     public Avatar(int x, int y, TETile t) {
         position = new Position(x, y);
         currTile = t;
+        hasKey = false;
+        worldsTraveled = 0;
     }
 
     public TETile currentTile() {
@@ -34,6 +41,16 @@ public class Avatar {
             currTile = world[newX][newY];
             position = new Position(newX, newY);
             world[newX][newY] = Tileset.AVATAR;
+        } else if (world[newX][newY].equals(Tileset.KEY)) {
+            world[position.x()][position.y()] = currTile;
+            currTile = Tileset.FLOOR;
+            position = new Position(newX, newY);
+            world[newX][newY] = Tileset.AVATAR;
+            hasKey = true;
+        } else if (world[newX][newY].equals(Tileset.LOCKED_DOOR) && hasKey) {
+            if (worldsTraveled < LIMIT) {
+                world = WorldGenerator.generateWorld(WorldGenerator.getRandomGen(world).nextLong());
+            }
         }
     }
 
