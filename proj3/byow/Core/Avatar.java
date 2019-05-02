@@ -40,7 +40,7 @@ public class Avatar implements Serializable {
             world[position.x()][position.y()] = currTile;
             currTile = world[newX][newY];
             position = new Position(newX, newY);
-            world[newX][newY] = Tileset.AVATAR;
+            world[newX][newY] = Tileset.AVATAR; /*
         } else if (world[newX][newY].equals(Tileset.KEY)) {
             world[position.x()][position.y()] = currTile;
             currTile = Tileset.FLOOR;
@@ -50,12 +50,12 @@ public class Avatar implements Serializable {
             System.out.println("You picked up a key");
         } else if (world[newX][newY].equals(Tileset.LOCKED_DOOR) && hasKey) {
             System.out.println("You open the door and enter");
-            enteredDoor = true;
+            enteredDoor = true; */
         }
     }
-
+/*
     public boolean enteredDoor() {
         return enteredDoor;
     }
-
+*/
 }

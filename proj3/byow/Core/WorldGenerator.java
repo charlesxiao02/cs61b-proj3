@@ -75,14 +75,14 @@ public class WorldGenerator {
             hallsGenerated++;
         }
         genRandomHalls(hallsGenerated, numHalls, world);
-        placeDoorandKeyBox(world);
+        //placeDoorandKeyBox(world);
         return world;
     }
 
     public static Random getRandomGen(TETile[][] world) {
         return randomGen;
     }
-
+/*
     private static void placeDoorandKeyBox(TETile[][] world) {
         int x = randomGen.nextInt(WORLD_WIDTH - 2) + 1;
         int y = randomGen.nextInt(WORLD_HEIGHT - 2) + 1;
@@ -144,7 +144,7 @@ public class WorldGenerator {
         }
         return valid;
     }
-
+*/
     private static void genRandomHalls(int hallsGenerated, int numHalls, TETile[][] world) {
         while (hallsGenerated < numHalls) {
             int x = randomGen.nextInt(WORLD_WIDTH - 3) + 1; //pick random int in world for x

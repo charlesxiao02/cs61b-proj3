@@ -88,7 +88,7 @@ public class Engine {
                         break;
                     default:
                         break;
-                }
+                } /*
                 if (player.enteredDoor()) {
                     Long newSeed = WorldGenerator.getRandomGen(world).nextLong();
                     world = WorldGenerator.generateWorld(newSeed);
@@ -97,7 +97,7 @@ public class Engine {
                     if (worldsTraveled == LIMIT) {
                         System.exit(0);
                     }
-                }
+                } */
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
@@ -248,6 +248,7 @@ public class Engine {
         Long seed = Long.parseLong(seedString);
         index++;
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
+        player = placeAvatar(finalWorldFrame);
         //ter.renderFrame(finalWorldFrame);
         while (index < input.length()) {
             char key = input.charAt(index);
