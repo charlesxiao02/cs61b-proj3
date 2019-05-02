@@ -47,7 +47,7 @@ public class Avatar implements Serializable {
             position = new Position(newX, newY);
             world[newX][newY] = Tileset.AVATAR;
             hasKey = true;
-            System.out.println("You picked up a key");/*
+            System.out.println("You picked up a key"); /*
         } else if (world[newX][newY].equals(Tileset.LOCKED_DOOR) && hasKey) {
             System.out.println("You open the door and enter");
             enteredDoor = true;*/

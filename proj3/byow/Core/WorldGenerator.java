@@ -74,7 +74,7 @@ public class WorldGenerator {
             rooms.union(room1, room2);
             hallsGenerated++;
         }
-        genRandomHalls(hallsGenerated, numHalls, randomGen, world);
+        genRandomHalls(hallsGenerated, numHalls, world);
         placeDoorandKeyBox(world);
         return world;
     }
@@ -106,53 +106,50 @@ public class WorldGenerator {
     private static boolean isValidDoorPlace(int x, int y, TETile[][] world) {
         boolean valid = false;
         if (x > 0 && x < (WORLD_WIDTH - 1) && y > 0 && y < (WORLD_HEIGHT - 1)) {
-            if ((world[x][y + 1].equals(Tileset.FLOOR) && world[x][y - 1].equals(Tileset.NOTHING))){
+            if ((world[x][y + 1].equals(Tileset.FLOOR)
+                    && world[x][y - 1].equals(Tileset.NOTHING))) {
                 valid = true;
                 return valid;
-            } else if((world[x][y + 1].equals(Tileset.NOTHING) && world[x][y - 1].equals(Tileset.FLOOR))) {
+            } else if ((world[x][y + 1].equals(Tileset.NOTHING)
+                    && world[x][y - 1].equals(Tileset.FLOOR))) {
                 valid = true;
                 return valid;
-            }else if ((world[x + 1][y].equals(Tileset.FLOOR) && world[x - 1][y].equals(Tileset.NOTHING))){
+            } else if ((world[x + 1][y].equals(Tileset.FLOOR)
+                    && world[x - 1][y].equals(Tileset.NOTHING))) {
                 valid = true;
                 return valid;
-            } else if((world[x - 1][y].equals(Tileset.NOTHING) && world[x - 1][y].equals(Tileset.FLOOR))) {
+            } else if ((world[x - 1][y].equals(Tileset.NOTHING)
+                    && world[x - 1][y].equals(Tileset.FLOOR))) {
                 valid = true;
                 return valid;
             }
         }
-        switch (x) {
-            case 0:
-                if (world[x + 1][y].equals(Tileset.FLOOR)) {
-                    valid = true;
-                    return valid;
-                    // break;
-                }
-            case (WORLD_WIDTH - 1):
-                if (world[x - 1][y].equals(Tileset.FLOOR)) {
-                    valid = true;
-                    return valid;
-                    //  break;
-                }
+        if (x == 0) {
+            if (world[x + 1][y].equals(Tileset.FLOOR)) {
+                valid = true;
+                return valid;
+            }
+        } else if (x == WORLD_WIDTH - 1) {
+            if (world[x - 1][y].equals(Tileset.FLOOR)) {
+                valid = true;
+                return valid;
+            }
         }
-        switch (y) {
-            case 0:
-                if (world[x][y + 1].equals(Tileset.FLOOR)) {
-                    valid = true;
-                    return valid;
-                    // break;
-                }
-            case (WORLD_HEIGHT - 1):
-                if (world[x][y - 1].equals(Tileset.FLOOR)) {
-                    valid = true;
-                    return valid;
-                    //break;
-                }
+        if (y == 0) {
+            if (world[x][y + 1].equals(Tileset.FLOOR)) {
+                valid = true;
+                return valid;
+            }
+        } else if (y == WORLD_HEIGHT - 1) {
+            if (world[x][y - 1].equals(Tileset.FLOOR)) {
+                valid = true;
+                return valid;
+            }
         }
         return valid;
     }
 
-    private static void genRandomHalls(int hallsGenerated, int numHalls,
-                                       Random randomGen, TETile[][] world) {
+    private static void genRandomHalls(int hallsGenerated, int numHalls, TETile[][] world) {
         while (hallsGenerated < numHalls) {
             int x = randomGen.nextInt(WORLD_WIDTH - 3) + 1; //pick random int in world for x
             int y = randomGen.nextInt(WORLD_HEIGHT - 3) + 1; //same for y

@@ -88,15 +88,16 @@ public class Engine {
                         break;
                     default:
                         break;
-                }/*
+                } /*
                 if (player.enteredDoor()) {
-                    world = WorldGenerator.generateWorld(WorldGenerator.getRandomGen(world).nextLong());
+                    Long newSeed = WorldGenerator.getRandomGen(world).nextLong()
+                    world = WorldGenerator.generateWorld(newSeed);
                     player = placeAvatar(world);
                     worldsTraveled++;
                     if (worldsTraveled == LIMIT) {
                         System.exit(0);
                     }
-                }*/
+                } */
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
