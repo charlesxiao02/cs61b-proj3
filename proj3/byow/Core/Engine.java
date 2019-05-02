@@ -237,7 +237,7 @@ public class Engine {
         String firstKey = input.substring(0, 1);
         String seedString = "";
         int index = 1;
-        while (input.charAt(index) > 47 && input.charAt(i) < 58) {
+        while (input.charAt(index) > 47 && input.charAt(index) < 58) {
             seedString += input.charAt(index);
         }
         Long seed = Long.parseLong(seedString);
