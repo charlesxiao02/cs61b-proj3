@@ -13,7 +13,6 @@ public class WorldGenerator {
     private static final int WORLD_WIDTH = 80;
     private static final int WORLD_HEIGHT = 40;
     private static Random randomGen;
-    private static Avatar player;
 
     public static TETile[][] generateWorld(long seed) {
         randomGen = new Random(seed);
@@ -76,30 +75,12 @@ public class WorldGenerator {
             hallsGenerated++;
         }
         genRandomHalls(hallsGenerated, numHalls, randomGen, world);
-        player = WorldGenerator.placeAvatar(world);
         placeDoorandKeyBox(world);
         return world;
     }
 
     public static Random getRandomGen(TETile[][] world) {
         return randomGen;
-    }
-
-    public static Avatar getPlayer(TETile[][] world) {
-        return player;
-    }
-
-    private static Avatar placeAvatar(TETile[][] world) {
-        Random r = new Random(10);
-        int x = r.nextInt(WORLD_WIDTH - 2) + 1;
-        int y = r.nextInt(WORLD_HEIGHT - 2) + 1;
-        while (!world[x][y].equals(Tileset.FLOOR)) {
-            x = r.nextInt(WORLD_WIDTH - 2) + 1;
-            y = r.nextInt(WORLD_HEIGHT - 2) + 1;
-        }
-        Avatar avatar = new Avatar(x, y, world[x][y]);
-        world[x][y] = Tileset.AVATAR;
-        return avatar;
     }
 
     private static void placeDoorandKeyBox(TETile[][] world) {

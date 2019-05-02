@@ -9,20 +9,18 @@ public class Avatar {
     private Position position;
     private TETile currTile;
     private boolean hasKey;
-    private int worldsTraveled;
+    private boolean enteredDoor;
 
     public Avatar(Position p, TETile t) {
         position = p;
         currTile = t;
         hasKey = false;
-        worldsTraveled = 0;
     }
 
     public Avatar(int x, int y, TETile t) {
         position = new Position(x, y);
         currTile = t;
         hasKey = false;
-        worldsTraveled = 0;
     }
 
     public TETile currentTile() {
@@ -33,7 +31,7 @@ public class Avatar {
         return position;
     }
 
-    public TETile[][] moveAvatar(TETile[][] world, int deltX, int deltY) {
+    public void moveAvatar(TETile[][] world, int deltX, int deltY) {
         int newX = position.x() + deltX;
         int newY = position.y() + deltY;
         if (world[newX][newY].equals(Tileset.FLOOR)) {
@@ -49,13 +47,13 @@ public class Avatar {
             hasKey = true;
             System.out.println("You picked up a key");
         } else if (world[newX][newY].equals(Tileset.LOCKED_DOOR) && hasKey) {
-            if (worldsTraveled < LIMIT) {
-                System.out.println("You open the door and enter");
-                world = WorldGenerator.generateWorld(WorldGenerator.getRandomGen(world).nextLong());
-                worldsTraveled++;
-            }
+            System.out.println("You open the door and enter");
+            enteredDoor = true;
         }
-        return world;
+    }
+
+    public boolean enteredDoor() {
+        return enteredDoor;
     }
 
 }
