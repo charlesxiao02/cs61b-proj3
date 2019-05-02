@@ -238,7 +238,7 @@ public class Engine {
         long seed = Long.parseLong(input.substring(1, input.length() - 1));
         String lastKey = input.substring(input.length() - 1);
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
-        ter.renderFrame(finalWorldFrame);
+        //ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
