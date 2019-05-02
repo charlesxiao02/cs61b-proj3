@@ -238,6 +238,9 @@ public class Engine {
         // that works for many different input types.
 
         //ter.initialize(WIDTH, HEIGHT + 4);
+        if (input.length() == 0) {
+            return null;
+        }
         String firstKey = input.substring(0, 1);
         String seedString = "";
         int index = 1;
