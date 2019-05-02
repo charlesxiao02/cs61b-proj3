@@ -107,19 +107,19 @@ public class Engine {
                         play = false;
                         break;
                     case 'W':
-                        player.moveAvatar(world, 0, 1);
+                        world = player.moveAvatar(world, 0, 1);
                         allKeysPressed += key;
                         break;
                     case 'A':
-                        player.moveAvatar(world, -1, 0);
+                        world = player.moveAvatar(world, -1, 0);
                         allKeysPressed += key;
                         break;
                     case 'S':
-                        player.moveAvatar(world, 0, -1);
+                        world = player.moveAvatar(world, 0, -1);
                         allKeysPressed += key;
                         break;
                     case 'D':
-                        player.moveAvatar(world, 1, 0);
+                        world = player.moveAvatar(world, 1, 0);
                         allKeysPressed += key;
                         break;
                     default:

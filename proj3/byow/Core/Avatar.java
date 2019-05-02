@@ -33,7 +33,7 @@ public class Avatar {
         return position;
     }
 
-    public void moveAvatar(TETile[][] world, int deltX, int deltY) {
+    public TETile[][] moveAvatar(TETile[][] world, int deltX, int deltY) {
         int newX = position.x() + deltX;
         int newY = position.y() + deltY;
         if (world[newX][newY].equals(Tileset.FLOOR)) {
@@ -47,11 +47,15 @@ public class Avatar {
             position = new Position(newX, newY);
             world[newX][newY] = Tileset.AVATAR;
             hasKey = true;
+            System.out.println("You picked up a key");
         } else if (world[newX][newY].equals(Tileset.LOCKED_DOOR) && hasKey) {
             if (worldsTraveled < LIMIT) {
+                System.out.println("You open the door and enter");
                 world = WorldGenerator.generateWorld(WorldGenerator.getRandomGen(world).nextLong());
+                worldsTraveled++;
             }
         }
+        return world;
     }
 
 }
