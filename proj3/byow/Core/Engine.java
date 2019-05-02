@@ -31,7 +31,6 @@ public class Engine {
         drawStartMenu();
         int mouseX = 0;
         int mouseY = 0;
-        String allKeysPressed = "";
         boolean play = true;
         InputSource inputSource = new KeyboardInputSource();
         while (play) {
@@ -47,59 +46,49 @@ public class Engine {
                     case ':':
                         if (inputSource.possibleNextInput()) {
                             key = inputSource.getNextKey();
-                            allKeysPressed += key;
                         }
                         if (key == 'Q') {
-                            allKeysPressed += key;
-                            saveToFile(allKeysPressed);
+                            saveToFile(world, player);
                             System.exit(0);
-                        } else {
-                            allKeysPressed = allKeysPressed.substring(0,
-                                    allKeysPressed.length() - 1);
                         }
                         break;
                     case 'L':
-                        world = loadFromFile();
+                        Object[] loaded = loadFromFile();
+                        world = (TETile[][]) loaded[0];
+                        player = (Avatar) loaded[1];
                         break;
                     case 'N':
-                        allKeysPressed += key;
                         String seed = "";
                         if (inputSource.possibleNextInput()) {
                             key = inputSource.getNextKey();
-                            allKeysPressed += key;
                         }
                         while (key != 'S') {
                             seed += key;
                             if (inputSource.possibleNextInput()) {
                                 key = inputSource.getNextKey();
-                                allKeysPressed += key;
                             }
                         }
                         world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
                         player = placeAvatar(world);
                         break;
                     case 'E':
-                        play = false;
+                        System.exit(0);
                         break;
                     case 'W':
                         player.moveAvatar(world, 0, 1);
-                        allKeysPressed += key;
                         break;
                     case 'A':
                         player.moveAvatar(world, -1, 0);
-                        allKeysPressed += key;
                         break;
                     case 'S':
                         player.moveAvatar(world, 0, -1);
-                        allKeysPressed += key;
                         break;
                     case 'D':
                         player.moveAvatar(world, 1, 0);
-                        allKeysPressed += key;
                         break;
                     default:
                         break;
-                }
+                }/*
                 if (player.enteredDoor()) {
                     world = WorldGenerator.generateWorld(WorldGenerator.getRandomGen(world).nextLong());
                     player = placeAvatar(world);
@@ -107,7 +96,7 @@ public class Engine {
                     if (worldsTraveled == LIMIT) {
                         System.exit(0);
                     }
-                }
+                }*/
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
@@ -128,11 +117,12 @@ public class Engine {
         return avatar;
     }
 
-    private void saveToFile(String input) {
-        OutputStream os = null;
+    private void saveToFile(TETile[][] input1, Avatar input2) {
+        ObjectOutputStream os = null;
         try {
-            os = new FileOutputStream(new File("savefile.txt"));
-            os.write(input.getBytes());
+            os = new ObjectOutputStream(new FileOutputStream(new File("savefile.txt")));
+            os.writeObject(input1);
+            os.writeObject(input2);
             System.out.println("Save successful");
         } catch (IOException e) {
             e.printStackTrace();
@@ -145,23 +135,18 @@ public class Engine {
         }
     }
 
-    private TETile[][] loadFromFile() {
+    private Object[] loadFromFile() {
+        Object[] input = new Object[2];
         try {
-            FileReader fr = new FileReader(new File("savefile.txt"));
-            String input = "";
-            int i;
-            while ((i = fr.read()) != -1) {
-                input += (char) i;
-            }
-            while (input.charAt(input.length() - 1) == 'Q') {
-                input = input.substring(0, input.length() - 1);
-            }
-            //world = interactWithInputString(input);
-            System.out.println(input);
+            ObjectInputStream is = new ObjectInputStream(new FileInputStream("savefile.txt"));
+            input[0] = is.readObject();
+            input[1] = is.readObject();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return null;
+        return input;
     }
 
     private Position updateHUD(int mousex, int mousey, TETile[][] worldinput) {

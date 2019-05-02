@@ -3,7 +3,9 @@ package byow.Core;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-public class Avatar {
+import java.io.Serializable;
+
+public class Avatar implements Serializable {
 
     private static final int LIMIT = 4;
     private Position position;
@@ -45,15 +47,15 @@ public class Avatar {
             position = new Position(newX, newY);
             world[newX][newY] = Tileset.AVATAR;
             hasKey = true;
-            System.out.println("You picked up a key");
+            System.out.println("You picked up a key");/*
         } else if (world[newX][newY].equals(Tileset.LOCKED_DOOR) && hasKey) {
             System.out.println("You open the door and enter");
-            enteredDoor = true;
+            enteredDoor = true;*/
         }
     }
-
+/*
     public boolean enteredDoor() {
         return enteredDoor;
     }
-
+*/
 }

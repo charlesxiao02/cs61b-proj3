@@ -1,9 +1,10 @@
 
 package byow.Core;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Room {
+public class Room implements Serializable {
     private Position location;
     private int width;
     private int height;
