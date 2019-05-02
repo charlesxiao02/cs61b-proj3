@@ -278,6 +278,7 @@ public class Engine {
                 default:
                     break;
             }
+            index++;
         }
         return finalWorldFrame;
     }
