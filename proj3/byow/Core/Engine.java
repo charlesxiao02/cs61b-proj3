@@ -235,8 +235,12 @@ public class Engine {
 
         //ter.initialize(WIDTH, HEIGHT + 4);
         String firstKey = input.substring(0, 1);
-        long seed = Long.parseLong(input.substring(1, input.length() - 1));
-        String lastKey = input.substring(input.length() - 1);
+        String seedString = "";
+        int index = 1;
+        while (input.charAt(index) > 47 && input.charAt(i) < 58) {
+            seedString += input.charAt(index);
+        }
+        Long seed = Long.parseLong(seedString);
         TETile[][] finalWorldFrame = WorldGenerator.generateWorld(seed);
         //ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
