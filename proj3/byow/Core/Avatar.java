@@ -50,7 +50,7 @@ public class Avatar implements Serializable {
             position = new Position(newX, newY);
             world[newX][newY] = Tileset.AVATAR;
         } else if (world[newX][newY].equals(Tileset.KEY)) {
-            pickedUpKey();ddd
+            pickedUpKey();
             world[position.x()][position.y()] = currTile;
             currTile = Tileset.FLOOR;
             position = new Position(newX, newY);
