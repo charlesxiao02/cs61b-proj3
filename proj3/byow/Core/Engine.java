@@ -251,10 +251,10 @@ public class Engine {
         if (input.length() == 0) {
             return null;
         }
-        String firstKey = input.substring(0, 1);
+        char firstKey = Character.toUpperCase(input.charAt(0));
         int index = 1;
         TETile[][] finalWorldFrame = null;
-        if (!firstKey.equals("l") && !firstKey.equals("L")) {
+        if (firstKey != 'L') {
             String seedString = "";
             while (input.charAt(index) > 47 && input.charAt(index) < 58) {
                 seedString += input.charAt(index);
@@ -264,13 +264,12 @@ public class Engine {
             index++;
             finalWorldFrame = WorldGenerator.generateWorld(seed);
             player = placeAvatar(finalWorldFrame);
-        } else if (firstKey.equals("l") || firstKey.equals("L")) {
+        } else if (firstKey == 'L') {
             Object[] loaded = loadFromFile();
             finalWorldFrame = (TETile[][]) loaded[0];
             player = (Avatar) loaded[1];
         }
         ter.renderFrame(finalWorldFrame);
-       // ter.renderFrame(finalWorldFrame);
         while (index < input.length() + 1) {
             char key = input.charAt(index - 1);
             key = Character.toUpperCase(key);
@@ -309,6 +308,7 @@ public class Engine {
             }
             index++;
             ter.renderFrame(finalWorldFrame);
+            StdDraw.pause(20);
         }
         //ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
