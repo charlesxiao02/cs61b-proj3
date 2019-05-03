@@ -2,7 +2,6 @@ package byow.Core;
 
 import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
-import byow.SaveDemo.World;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
@@ -23,6 +22,7 @@ public class Engine {
     private Avatar player;
     private int worldsTraveled;
     private static final int LIMIT = 4;
+    private String allKeys;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -37,24 +37,24 @@ public class Engine {
         int mouseY = 0;
         Random r;
         boolean play = true;
-        startMusic();
+        allKeys = "";
         InputSource inputSource = new KeyboardInputSource();
         while (play) {
-            char key;
             if (!StdDraw.hasNextKeyTyped()) {
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
             } else {
-                char c = Character.toUpperCase(StdDraw.nextKeyTyped());
-                key = c;
+                char key = Character.toUpperCase(StdDraw.nextKeyTyped());
+                allKeys += key;
                 switch (key) {
                     case ':':
                         if (inputSource.possibleNextInput()) {
                             key = inputSource.getNextKey();
                         }
                         if (key == 'Q') {
-                            saveToFile(world, player);
+                            allKeys += key;
+                            saveToFile(world, player, allKeys);
                             System.exit(0);
                         }
                         break;
@@ -62,9 +62,8 @@ public class Engine {
                         Object[] loaded = loadFromFile();
                         world = (TETile[][]) loaded[0];
                         player = (Avatar) loaded[1];
+                        allKeys = (String) loaded[2] + key;
                         r = new Random(20);
-                        Long start = r.nextLong();
-                      //  WorldGenerator.placeDoorandKeyBox(world, start);
                         break;
                     case 'N':
                         String seed = "";
@@ -73,6 +72,7 @@ public class Engine {
                         }
                         while (key != 'S') {
                             seed += key;
+                            allKeys += key;
                             if (inputSource.possibleNextInput()) {
                                 key = inputSource.getNextKey();
                             }
@@ -80,6 +80,10 @@ public class Engine {
                         world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
                         player = placeAvatar(world);
                         break;
+                    case 'R':
+                        loaded = loadFromFile();
+                        allKeys = (String) loaded[2];
+                        world = interactWithInputString(allKeys.substring(0, allKeys.length() - 2));
                     case 'E':
                         System.exit(0);
                         break;
@@ -101,7 +105,6 @@ public class Engine {
                 if (player.enteredDoor()) {
                     doorSound();
                     Long newSeed;
-               //     Long newSeed = WorldGenerator.getRandomGen(world).nextLong();
                     try {
                         newSeed = WorldGenerator.getRandomGen(world).nextLong();
                     } catch (NullPointerException e) {
@@ -111,7 +114,7 @@ public class Engine {
                     world = WorldGenerator.generateWorld(newSeed);
                     player = placeAvatar(world);
                     worldsTraveled++;
-                    if (worldsTraveled == LIMIT) {
+                    if (worldsTraveled > LIMIT) {
                         System.exit(0);
                     }
                 }
@@ -135,12 +138,13 @@ public class Engine {
         return avatar;
     }
 
-    private void saveToFile(TETile[][] input1, Avatar input2) {
+    private void saveToFile(TETile[][] world, Avatar player, String keys) {
         ObjectOutputStream os = null;
         try {
             os = new ObjectOutputStream(new FileOutputStream("savefile.txt"));
-            os.writeObject(input1);
-            os.writeObject(input2);
+            os.writeObject(world);
+            os.writeObject(player);
+            os.writeObject(keys);
             System.out.println("Save successful");
         } catch (IOException e) {
             e.printStackTrace();
@@ -154,11 +158,12 @@ public class Engine {
     }
 
     private Object[] loadFromFile() {
-        Object[] input = new Object[2];
+        Object[] input = new Object[3];
         try {
             ObjectInputStream is = new ObjectInputStream(new FileInputStream("savefile.txt"));
             input[0] = is.readObject();
             input[1] = is.readObject();
+            input[2] = is.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -169,8 +174,6 @@ public class Engine {
 
     private Position updateHUD(int mousex, int mousey, TETile[][] worldinput) {
         StdDraw.enableDoubleBuffering();
-
-        boolean change = false;
         int newMouseX = (int) StdDraw.mouseX();
         int newMouseY = (int) StdDraw.mouseY();
         if (newMouseX >= WIDTH) {
@@ -184,15 +187,10 @@ public class Engine {
         }
         if (newMouseX != mousex) {
             mousex = newMouseX;
-            change = true;
-            //System.out.println(mousex + " " + mousey);
         }
         if (newMouseY != mousey) {
             mousey = newMouseY;
-            change = true;
-            //System.out.println(mousex + " " + mousey);
         }
-        //System.out.println(mouseX + " " + mouseY);
         if (worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
             StdDraw.clear();
 
@@ -201,9 +199,7 @@ public class Engine {
             StdDraw.text(6, HEIGHT + 2, worldinput[mousex][mousey].description());
             StdDraw.enableDoubleBuffering();
             StdDraw.show();
-            //System.out.println(mousex + " " + mousey);
         }
-        //ter.renderFrame(world);
         StdDraw.pause(20);
 
         return new Position(mousex, mousey);
@@ -232,19 +228,18 @@ public class Engine {
         }
     }
     private void drawStartMenu() {
-
         StdDraw.clear(StdDraw.BLACK);
         Font title = new Font(Font.MONOSPACED, Font.BOLD, 32);
-        Font subtitle = new Font(Font.MONOSPACED, Font.PLAIN, 20);
+        Font subtitle = new Font(Font.MONOSPACED, Font.BOLD, 16);
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.setFont(title);
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 4, "CS61B Project");
         StdDraw.setFont(subtitle);
         StdDraw.text(WIDTH / 2, HEIGHT / 2, "(N)ew Game");
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(L)oad Game");
-        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(E)xit");
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(R)eplay Last Save");
+        StdDraw.text(WIDTH / 2, HEIGHT / 8, "(E)xit");
         StdDraw.show();
-
     }
 
     /**
@@ -280,10 +275,10 @@ public class Engine {
         if (input.length() == 0) {
             return null;
         }
-        String firstKey = input.substring(0, 1);
+        char firstKey = Character.toUpperCase(input.charAt(0));
         int index = 1;
         TETile[][] finalWorldFrame = null;
-        if (!firstKey.equals("l") && !firstKey.equals("L")) {
+        if (firstKey != 'L') {
             String seedString = "";
             while (input.charAt(index) > 47 && input.charAt(index) < 58) {
                 seedString += input.charAt(index);
@@ -293,13 +288,12 @@ public class Engine {
             index++;
             finalWorldFrame = WorldGenerator.generateWorld(seed);
             player = placeAvatar(finalWorldFrame);
-        } else if (firstKey.equals("l") || firstKey.equals("L")) {
+        } else if (firstKey == 'L') {
             Object[] loaded = loadFromFile();
             finalWorldFrame = (TETile[][]) loaded[0];
             player = (Avatar) loaded[1];
         }
         ter.renderFrame(finalWorldFrame);
-       // ter.renderFrame(finalWorldFrame);
         while (index < input.length() + 1) {
             char key = input.charAt(index - 1);
             key = Character.toUpperCase(key);
@@ -308,7 +302,7 @@ public class Engine {
                     key = input.charAt(index);
                     key = Character.toUpperCase(key);
                     if (key == 'Q') {
-                        saveToFile(finalWorldFrame, player);
+                        saveToFile(finalWorldFrame, player, allKeys);
                         System.exit(0);
                     }
                     break;
@@ -316,30 +310,46 @@ public class Engine {
                     Object[] loaded = loadFromFile();
                     finalWorldFrame = (TETile[][]) loaded[0];
                     player = (Avatar) loaded[1];
+                    allKeys = (String) loaded[2] + key;
                     break;
                 case 'E':
                     System.exit(0);
                     break;
                 case 'W':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 0, 1);
+                    player.moveAvatar(finalWorldFrame, 0, 1);
                     break;
                 case 'A':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, -1, 0);
+                    player.moveAvatar(finalWorldFrame, -1, 0);
                     break;
                 case 'S':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 0, -1);
+                    player.moveAvatar(finalWorldFrame, 0, -1);
                     break;
                 case 'D':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 1, 0);
+                    player.moveAvatar(finalWorldFrame, 1, 0);
                     break;
                 default:
                     break;
             }
+            if (player.enteredDoor()) {
+                Long newSeed;
+                try {
+                    newSeed = WorldGenerator.getRandomGen(finalWorldFrame).nextLong();
+                } catch (NullPointerException e) {
+                    Random r = new Random(player.position().x() * player.position().y());
+                    newSeed = r.nextLong();
+                }
+                finalWorldFrame = WorldGenerator.generateWorld(newSeed);
+                player = placeAvatar(finalWorldFrame);
+                worldsTraveled++;
+                if (worldsTraveled > LIMIT) {
+                    System.exit(0);
+                }
+            }
             index++;
-           // ter.renderFrame(finalWorldFrame);
             ter.renderFrame(finalWorldFrame);
+            StdDraw.pause(20);
         }
-        //ter.renderFrame(finalWorldFrame);
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }

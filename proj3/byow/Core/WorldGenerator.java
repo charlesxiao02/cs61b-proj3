@@ -1,9 +1,10 @@
 package byow.Core;
 
-//import byow.TileEngine.TERenderer;
+import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+import edu.princeton.cs.introcs.StdDraw;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -312,7 +313,7 @@ public class WorldGenerator {
     }
 
 
-    /*
+
     //testing purposes
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
@@ -329,7 +330,7 @@ public class WorldGenerator {
 
         // fills in a block 14 tiles wide by 4 tiles tall
 
-        world = generateWorld(8963186996212760330L);
+        world = generateWorld(7);
 
         //makeRoom(world, new Position(WORLD_WIDTH- 20, WORLD_HEIGHT - 14), 7, 7);
         //makeHallway(world, new Position(25, 1), new Position(25, WORLD_HEIGHT - 2));
@@ -340,6 +341,6 @@ public class WorldGenerator {
 
         // draws the world to the screen
         ter.renderFrame(world);
-    }*/
+    }
 
 }

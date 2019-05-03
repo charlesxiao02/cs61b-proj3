@@ -6,8 +6,7 @@ import byow.TileEngine.Tileset;
 import java.io.Serializable;
 
 public class Avatar implements Serializable {
-
-    private static final int LIMIT = 4;
+    
     private Position position;
     private TETile currTile;
     private boolean hasKey;
