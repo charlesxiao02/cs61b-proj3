@@ -2,7 +2,6 @@ package byow.Core;
 
 import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
-import byow.SaveDemo.World;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
@@ -59,8 +58,6 @@ public class Engine {
                         world = (TETile[][]) loaded[0];
                         player = (Avatar) loaded[1];
                         r = new Random(20);
-                        Long start = r.nextLong();
-                      //  WorldGenerator.placeDoorandKeyBox(world, start);
                         break;
                     case 'N':
                         String seed = "";
@@ -96,7 +93,6 @@ public class Engine {
                 }
                 if (player.enteredDoor()) {
                     Long newSeed;
-               //     Long newSeed = WorldGenerator.getRandomGen(world).nextLong();
                     try {
                         newSeed = WorldGenerator.getRandomGen(world).nextLong();
                     } catch (NullPointerException e) {
@@ -164,8 +160,6 @@ public class Engine {
 
     private Position updateHUD(int mousex, int mousey, TETile[][] worldinput) {
         StdDraw.enableDoubleBuffering();
-
-        boolean change = false;
         int newMouseX = (int) StdDraw.mouseX();
         int newMouseY = (int) StdDraw.mouseY();
         if (newMouseX >= WIDTH) {
@@ -179,15 +173,10 @@ public class Engine {
         }
         if (newMouseX != mousex) {
             mousex = newMouseX;
-            change = true;
-            //System.out.println(mousex + " " + mousey);
         }
         if (newMouseY != mousey) {
             mousey = newMouseY;
-            change = true;
-            //System.out.println(mousex + " " + mousey);
         }
-        //System.out.println(mouseX + " " + mouseY);
         if (worldinput[0][0] != null && worldinput[mousex][mousey] != null) {
             StdDraw.clear();
 
@@ -196,9 +185,7 @@ public class Engine {
             StdDraw.text(6, HEIGHT + 2, worldinput[mousex][mousey].description());
             StdDraw.enableDoubleBuffering();
             StdDraw.show();
-            //System.out.println(mousex + " " + mousey);
         }
-        //ter.renderFrame(world);
         StdDraw.pause(20);
 
         return new Position(mousex, mousey);
@@ -309,7 +296,6 @@ public class Engine {
                     break;
             }
             index++;
-           // ter.renderFrame(finalWorldFrame);
             ter.renderFrame(finalWorldFrame);
         }
         //ter.renderFrame(finalWorldFrame);
