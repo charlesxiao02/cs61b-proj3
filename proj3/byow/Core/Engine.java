@@ -19,6 +19,7 @@ public class Engine {
     private Avatar player;
     private int worldsTraveled;
     private static final int LIMIT = 4;
+    private String allKeys;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -33,23 +34,24 @@ public class Engine {
         int mouseY = 0;
         Random r;
         boolean play = true;
+        allKeys = "";
         InputSource inputSource = new KeyboardInputSource();
         while (play) {
-            char key;
             if (!StdDraw.hasNextKeyTyped()) {
                 Position pointer = updateHUD(mouseX, mouseY, world);
                 mouseX = pointer.x();
                 mouseY = pointer.y();
             } else {
-                char c = Character.toUpperCase(StdDraw.nextKeyTyped());
-                key = c;
+                char key = Character.toUpperCase(StdDraw.nextKeyTyped());
+                allKeys += key;
                 switch (key) {
                     case ':':
                         if (inputSource.possibleNextInput()) {
                             key = inputSource.getNextKey();
                         }
                         if (key == 'Q') {
-                            saveToFile(world, player);
+                            allKeys += key;
+                            saveToFile(world, player, allKeys);
                             System.exit(0);
                         }
                         break;
@@ -57,6 +59,7 @@ public class Engine {
                         Object[] loaded = loadFromFile();
                         world = (TETile[][]) loaded[0];
                         player = (Avatar) loaded[1];
+                        allKeys = (String) loaded[2] + key;
                         r = new Random(20);
                         break;
                     case 'N':
@@ -66,6 +69,7 @@ public class Engine {
                         }
                         while (key != 'S') {
                             seed += key;
+                            allKeys += key;
                             if (inputSource.possibleNextInput()) {
                                 key = inputSource.getNextKey();
                             }
@@ -73,6 +77,10 @@ public class Engine {
                         world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
                         player = placeAvatar(world);
                         break;
+                    case 'R':
+                        loaded = loadFromFile();
+                        allKeys = (String) loaded[2];
+                        world = interactWithInputString(allKeys.substring(0, allKeys.length() - 2));
                     case 'E':
                         System.exit(0);
                         break;
@@ -126,12 +134,13 @@ public class Engine {
         return avatar;
     }
 
-    private void saveToFile(TETile[][] input1, Avatar input2) {
+    private void saveToFile(TETile[][] world, Avatar player, String keys) {
         ObjectOutputStream os = null;
         try {
             os = new ObjectOutputStream(new FileOutputStream("savefile.txt"));
-            os.writeObject(input1);
-            os.writeObject(input2);
+            os.writeObject(world);
+            os.writeObject(player);
+            os.writeObject(keys);
             System.out.println("Save successful");
         } catch (IOException e) {
             e.printStackTrace();
@@ -145,11 +154,12 @@ public class Engine {
     }
 
     private Object[] loadFromFile() {
-        Object[] input = new Object[2];
+        Object[] input = new Object[3];
         try {
             ObjectInputStream is = new ObjectInputStream(new FileInputStream("savefile.txt"));
             input[0] = is.readObject();
             input[1] = is.readObject();
+            input[2] = is.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -202,7 +212,8 @@ public class Engine {
         StdDraw.setFont(subtitle);
         StdDraw.text(WIDTH / 2, HEIGHT / 2, "(N)ew Game");
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(L)oad Game");
-        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(E)xit");
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(R)eplay Last Save");
+        StdDraw.text(WIDTH / 2, HEIGHT / 8, "(E)xit");
         StdDraw.show();
 
     }
@@ -268,7 +279,7 @@ public class Engine {
                     key = input.charAt(index);
                     key = Character.toUpperCase(key);
                     if (key == 'Q') {
-                        saveToFile(finalWorldFrame, player);
+                        saveToFile(finalWorldFrame, player, allKeys);
                         System.exit(0);
                     }
                     break;
@@ -276,6 +287,7 @@ public class Engine {
                     Object[] loaded = loadFromFile();
                     finalWorldFrame = (TETile[][]) loaded[0];
                     player = (Avatar) loaded[1];
+                    allKeys = (String) loaded[2] + key;
                     break;
                 case 'E':
                     System.exit(0);
