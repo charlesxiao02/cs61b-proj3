@@ -37,6 +37,7 @@ public class Engine {
         int mouseY = 0;
         Random r;
         boolean play = true;
+        startMusic();
         allKeys = "";
         InputSource inputSource = new KeyboardInputSource();
         while (play) {
