@@ -196,7 +196,7 @@ public class Engine {
             StdDraw.clear();
             ter.renderFrame(worldinput);
             StdDraw.setPenColor(StdDraw.WHITE);
-            StdDraw.textLeft(1, HEIGHT + 2, "You see a " + worldinput[mousex][mousey].description() + " here");
+            StdDraw.textLeft(1, HEIGHT + 2, "You see " + worldinput[mousex][mousey].description() + " here");
             if (player.hasKey()) {
                 StdDraw.setPenColor(StdDraw.YELLOW);
                 StdDraw.text(78, HEIGHT + 2, "⚷");

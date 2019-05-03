@@ -65,7 +65,7 @@ public class Avatar implements Serializable {
     }
     private void pickedUpKey() {
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\household_key_car_electronic_pick_up_from_table_002.au").getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("household_key_car_electronic_pick_up_from_table_002.au").getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
@@ -76,7 +76,7 @@ public class Avatar implements Serializable {
     }
     private void stepping() {
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\zapsplat_foley_footstep_single_trainer_on_wooden_step_011_27751.au").getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("zapsplat_foley_footstep_single_trainer_on_wooden_step_011_27751.au").getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
