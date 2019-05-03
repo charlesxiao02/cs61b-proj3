@@ -1,5 +1,17 @@
 package byow.InputDemo;
 
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+
 /**
  * Created by hug.
  * Demonstrates how a single interface can be used to provide input
@@ -22,6 +34,48 @@ public class DemoInputSource {
         } else { // inputType == STRING
             inputSource = new StringInputDevice("HELLO MY FRIEND. QUACK QUACK");
         }
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\Magic-Clock-Shop.au").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch(Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
+        /*
+        try {
+            File audioFile = new File("\"C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\byow\"");
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            AudioFormat format = audioStream.getFormat();
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
+            Clip audioClip = (Clip) AudioSystem.getLine(info);
+            audioClip.open(audioStream);
+            audioClip.start();
+        } catch (IOException e) {
+            System.out.println("File not found.");
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Not correct file type.");
+        } catch (LineUnavailableException e) {
+            System.out.println("No Line.");
+        } */
+
+       /* try {
+            File yourFile = new File("Magic-Clock-Shop.au");
+            AudioInputStream stream;
+            AudioFormat format;
+            DataLine.Info info;
+            Clip clip;
+            stream = AudioSystem.getAudioInputStream(yourFile);
+            format = stream.getFormat();
+            info = new DataLine.Info(Clip.class, format);
+            clip = (Clip) AudioSystem.getLine(info);
+            clip.open(stream);
+            clip.start();
+        }
+        catch (Exception m) {
+            System.out.println("No music file found.");
+        } */
 
         int totalCharacters = 0;
 

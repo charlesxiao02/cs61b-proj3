@@ -8,6 +8,9 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.io.*;
 import java.util.Random;
@@ -34,6 +37,7 @@ public class Engine {
         int mouseY = 0;
         Random r;
         boolean play = true;
+        startMusic();
         InputSource inputSource = new KeyboardInputSource();
         while (play) {
             char key;
@@ -95,6 +99,7 @@ public class Engine {
                         break;
                 }
                 if (player.enteredDoor()) {
+                    doorSound();
                     Long newSeed;
                //     Long newSeed = WorldGenerator.getRandomGen(world).nextLong();
                     try {
@@ -203,7 +208,29 @@ public class Engine {
 
         return new Position(mousex, mousey);
     }
+    private void startMusic() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\Magic-Clock-Shop.au").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
+    }
 
+    private void doorSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\glitchedtones_Door-Bedroom-Open-01.au").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
+    }
     private void drawStartMenu() {
 
         StdDraw.clear(StdDraw.BLACK);

@@ -9,12 +9,42 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
+import javax.sound.sampled.*;
+
 
 public class Main {
     public static void main(String[] args) {
         /* If an editor has been saved before, we first load it */
         Editor e = loadEditor();
         e.initialize();
+
+        try {
+            File yourFile = new File("./Magic-Clock-Shop.au");
+            AudioInputStream stream;
+            AudioFormat format;
+            DataLine.Info info;
+            Clip clip;
+            stream = AudioSystem.getAudioInputStream(yourFile);
+            format = stream.getFormat();
+            info = new DataLine.Info(Clip.class, format);
+            clip = (Clip) AudioSystem.getLine(info);
+            clip.open(stream);
+            clip.start();
+        }
+        catch (Exception m) {
+            System.out.println("No music file found.");
+        }
+        /*
+        File clipFile = new File("./Surreal-Chase.mp3"); // path to your clip
+        AudioInputStream audioStrmObj = AudioSystem.getAudioInputStream(clipFile);
+        AudioFormat format = audioStrmObj.getFormat();
+        DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+        Clip audioClip = (Clip) AudioSystem.getLine(info);
+        audioClip.open(audioStrmObj);
+        audioClip.start();
+        */
 
         /* Loop to run the Editor with the following commands:
               $: Saves the current screen
@@ -83,4 +113,5 @@ public class Main {
             System.exit(0);
         }
     }
+
 }
