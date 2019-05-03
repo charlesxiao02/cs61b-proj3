@@ -110,7 +110,7 @@ public class Engine {
                     world = WorldGenerator.generateWorld(newSeed);
                     player = placeAvatar(world);
                     worldsTraveled++;
-                    if (worldsTraveled == LIMIT) {
+                    if (worldsTraveled > LIMIT) {
                         System.exit(0);
                     }
                 }
