@@ -202,10 +202,9 @@ public class Engine {
     }
 
     private void drawStartMenu() {
-
         StdDraw.clear(StdDraw.BLACK);
         Font title = new Font(Font.MONOSPACED, Font.BOLD, 32);
-        Font subtitle = new Font(Font.MONOSPACED, Font.PLAIN, 20);
+        Font subtitle = new Font(Font.MONOSPACED, Font.BOLD, 16);
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.setFont(title);
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 4, "CS61B Project");
@@ -215,7 +214,6 @@ public class Engine {
         StdDraw.text(WIDTH / 2, HEIGHT / 4, "(R)eplay Last Save");
         StdDraw.text(WIDTH / 2, HEIGHT / 8, "(E)xit");
         StdDraw.show();
-
     }
 
     /**
@@ -292,16 +290,16 @@ public class Engine {
                     System.exit(0);
                     break;
                 case 'W':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 0, 1);
+                    player.moveAvatar(finalWorldFrame, 0, 1);
                     break;
                 case 'A':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, -1, 0);
+                    player.moveAvatar(finalWorldFrame, -1, 0);
                     break;
                 case 'S':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 0, -1);
+                    player.moveAvatar(finalWorldFrame, 0, -1);
                     break;
                 case 'D':
-                    finalWorldFrame = player.moveAvatar(finalWorldFrame, 1, 0);
+                    player.moveAvatar(finalWorldFrame, 1, 0);
                     break;
                 default:
                     break;
@@ -310,7 +308,7 @@ public class Engine {
             ter.renderFrame(finalWorldFrame);
             StdDraw.pause(20);
         }
-        //ter.renderFrame(finalWorldFrame);
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
