@@ -3,6 +3,10 @@ package byow.Core;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.io.Serializable;
 
 public class Avatar implements Serializable {
@@ -40,11 +44,13 @@ public class Avatar implements Serializable {
         int newX = position.x() + deltX;
         int newY = position.y() + deltY;
         if (world[newX][newY].equals(Tileset.FLOOR)) {
+            stepping();
             world[position.x()][position.y()] = Tileset.FLOOR;
             currTile = world[newX][newY];
             position = new Position(newX, newY);
             world[newX][newY] = Tileset.AVATAR;
         } else if (world[newX][newY].equals(Tileset.KEY)) {
+            pickedUpKey();ddd
             world[position.x()][position.y()] = currTile;
             currTile = Tileset.FLOOR;
             position = new Position(newX, newY);
@@ -56,6 +62,28 @@ public class Avatar implements Serializable {
             enteredDoor = true;
         }
         return world;
+    }
+    private void pickedUpKey() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\household_key_car_electronic_pick_up_from_table_002.au").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
+    }
+    private void stepping() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\zapsplat_foley_footstep_single_trainer_on_wooden_step_011_27751.au").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
     }
 
     public boolean enteredDoor() {
