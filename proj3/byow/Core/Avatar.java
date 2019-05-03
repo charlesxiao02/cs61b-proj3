@@ -32,6 +32,10 @@ public class Avatar implements Serializable {
         return position;
     }
 
+    public boolean hasKey() {
+        return hasKey;
+    }
+
     public TETile[][] moveAvatar(TETile[][] world, int deltX, int deltY) {
         int newX = position.x() + deltX;
         int newY = position.y() + deltY;

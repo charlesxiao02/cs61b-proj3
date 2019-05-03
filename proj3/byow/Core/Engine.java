@@ -196,7 +196,11 @@ public class Engine {
             StdDraw.clear();
             ter.renderFrame(worldinput);
             StdDraw.setPenColor(StdDraw.WHITE);
-            StdDraw.text(6, HEIGHT + 2, worldinput[mousex][mousey].description());
+            StdDraw.textLeft(1, HEIGHT + 2, "You see a " + worldinput[mousex][mousey].description() + " here");
+            if (player.hasKey()) {
+                StdDraw.setPenColor(StdDraw.YELLOW);
+                StdDraw.text(78, HEIGHT + 2, "⚷");
+            }
             StdDraw.enableDoubleBuffering();
             StdDraw.show();
         }
@@ -206,7 +210,7 @@ public class Engine {
     }
     private void startMusic() {
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\Magic-Clock-Shop.au").getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Magic-Clock-Shop.au").getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
@@ -218,7 +222,7 @@ public class Engine {
 
     private void doorSound() {
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:\\cs61b\\sp19-proj3-s458-s950\\proj3\\glitchedtones_Door-Bedroom-Open-01.au").getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("glitchedtones_Door-Bedroom-Open-01.au").getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
