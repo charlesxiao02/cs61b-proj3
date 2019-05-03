@@ -6,7 +6,7 @@ import byow.TileEngine.Tileset;
 import java.io.Serializable;
 
 public class Avatar implements Serializable {
-    
+
     private Position position;
     private TETile currTile;
     private boolean hasKey;
