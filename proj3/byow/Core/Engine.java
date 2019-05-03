@@ -37,6 +37,7 @@ public class Engine {
         int mouseY = 0;
         Random r;
         boolean play = true;
+        boolean worldMade = false;
         startMusic();
         allKeys = "";
         InputSource inputSource = new KeyboardInputSource();
@@ -65,6 +66,7 @@ public class Engine {
                         player = (Avatar) loaded[1];
                         allKeys = (String) loaded[2] + key;
                         r = new Random(20);
+                        worldMade = true;
                         break;
                     case 'N':
                         String seed = "";
@@ -77,6 +79,7 @@ public class Engine {
                             if (inputSource.possibleNextInput()) {
                                 key = inputSource.getNextKey();
                             }
+                            worldMade = true;
                         }
                         world = (WorldGenerator.generateWorld(Long.parseLong(seed)));
                         player = placeAvatar(world);
@@ -85,6 +88,12 @@ public class Engine {
                         loaded = loadFromFile();
                         allKeys = (String) loaded[2];
                         world = interactWithInputString(allKeys.substring(0, allKeys.length() - 2));
+                    case 'M':
+                        drawStartMenu();
+                        break;
+                    case 'I':
+                        drawInfoScreen();
+                        break;
                     case 'E':
                         System.exit(0);
                         break;
@@ -103,20 +112,22 @@ public class Engine {
                     default:
                         break;
                 }
-                if (player.enteredDoor()) {
-                    doorSound();
-                    Long newSeed;
-                    try {
-                        newSeed = WorldGenerator.getRandomGen(world).nextLong();
-                    } catch (NullPointerException e) {
-                        r = new Random(player.position().x() * player.position().y());
-                        newSeed = r.nextLong();
-                    }
-                    world = WorldGenerator.generateWorld(newSeed);
-                    player = placeAvatar(world);
-                    worldsTraveled++;
-                    if (worldsTraveled > LIMIT) {
-                        System.exit(0);
+                if (worldMade) {
+                    if (player.enteredDoor()) {
+                        doorSound();
+                        Long newSeed;
+                        try {
+                            newSeed = WorldGenerator.getRandomGen(world).nextLong();
+                        } catch (NullPointerException e) {
+                            r = new Random(player.position().x() * player.position().y());
+                            newSeed = r.nextLong();
+                        }
+                        world = WorldGenerator.generateWorld(newSeed);
+                        player = placeAvatar(world);
+                        worldsTraveled++;
+                        if (worldsTraveled > LIMIT) {
+                            System.exit(0);
+                        }
                     }
                 }
                 Position pointer = updateHUD(mouseX, mouseY, world);
@@ -240,10 +251,24 @@ public class Engine {
         StdDraw.setFont(title);
         StdDraw.text(WIDTH / 2, HEIGHT * 3 / 4, "CS61B Project");
         StdDraw.setFont(subtitle);
-        StdDraw.text(WIDTH / 2, HEIGHT / 2, "(N)ew Game");
-        StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(L)oad Game");
+        StdDraw.text(WIDTH / 2, HEIGHT * 5 / 8, "(N)ew Game");
+        StdDraw.text(WIDTH / 2, HEIGHT / 2, "(L)oad Game");
+        StdDraw.text(WIDTH / 2, HEIGHT * 3 / 8, "(I)nformation");
         StdDraw.text(WIDTH / 2, HEIGHT / 4, "(R)eplay Last Save");
         StdDraw.text(WIDTH / 2, HEIGHT / 8, "(E)xit");
+        StdDraw.show();
+    }
+
+    private void drawInfoScreen() {
+        StdDraw.clear(StdDraw.BLACK);
+        Font title = new Font(Font.MONOSPACED, Font.BOLD, 32);
+        Font subtitle = new Font(Font.MONOSPACED, Font.BOLD, 16);
+        StdDraw.setPenColor(StdDraw.WHITE);
+        StdDraw.setFont(title);
+        StdDraw.text(WIDTH / 2, HEIGHT * 3 / 4, "Information");
+        StdDraw.setFont(subtitle);
+        StdDraw.text(WIDTH / 2, HEIGHT / 2, "Collect keys and travel through 4 worlds to win");
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, "(M)enu");
         StdDraw.show();
     }
 

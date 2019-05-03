@@ -8,6 +8,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 import java.io.Serializable;
+import java.util.Random;
 
 public class Avatar implements Serializable {
 
@@ -44,7 +45,10 @@ public class Avatar implements Serializable {
         int newX = position.x() + deltX;
         int newY = position.y() + deltY;
         if (world[newX][newY].equals(Tileset.FLOOR)) {
-            stepping();
+            Random r = new Random();
+            if (r.nextBoolean()) {
+                stepping();
+            }
             world[position.x()][position.y()] = Tileset.FLOOR;
             currTile = world[newX][newY];
             position = new Position(newX, newY);
