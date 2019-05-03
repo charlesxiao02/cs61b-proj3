@@ -304,6 +304,21 @@ public class Engine {
                 default:
                     break;
             }
+            if (player.enteredDoor()) {
+                Long newSeed;
+                try {
+                    newSeed = WorldGenerator.getRandomGen(finalWorldFrame).nextLong();
+                } catch (NullPointerException e) {
+                    Random r = new Random(player.position().x() * player.position().y());
+                    newSeed = r.nextLong();
+                }
+                finalWorldFrame = WorldGenerator.generateWorld(newSeed);
+                player = placeAvatar(finalWorldFrame);
+                worldsTraveled++;
+                if (worldsTraveled > LIMIT) {
+                    System.exit(0);
+                }
+            }
             index++;
             ter.renderFrame(finalWorldFrame);
             StdDraw.pause(20);
